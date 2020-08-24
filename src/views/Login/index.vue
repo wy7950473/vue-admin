@@ -54,16 +54,16 @@
   </div>
 </template>
 <script>
+import { stripscript,validateEmail,validPassword,validCode } from "@/utils/validate.js"
 export default {
   name: "login",
   components: {},
   data() {
     // 验证用户名
     var validateUsername = (rule, value, callback) => {
-      let reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
       if (value === "") {
         callback(new Error("请输入用户名"));
-      } else if (!reg.test(value)) {
+      } else if (validateEmail(value)) {
         callback(new Error("用户名格式有误"));
       } else {
         if (this.ruleForm.password !== "") {
@@ -74,10 +74,9 @@ export default {
     };
     // 验证密码
     var validatePassword = (rule, value, callback) => {
-      let reg = /^(?!\D+$)(?![^a-zA-Z]+$)\S{6,20}$/;
       if (value === "") {
         callback(new Error("请输入密码"));
-      } else if (!reg.test(value)) {
+      } else if (validPassword(value)) {
         callback(new Error("密码为6至20位到数字加字母"));
       } else {
         callback();
@@ -85,10 +84,9 @@ export default {
     };
     // 验证验证码
     var validateCode = (rule, value, callback) => {
-      let reg = /^[a-z0-9]{6}$/;
       if (!value) {
         return callback(new Error("请输入验证码"));
-      } else if (!reg.test(value)) {
+      } else if (validCode(value)) {
           callback(new Error("验证码格式有误"));
       } else {
           callback();
