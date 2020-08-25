@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Login from "../views/Login/index.vue";
+import Login from "../views/Login/index";
 
 Vue.use(VueRouter);
 
@@ -13,7 +13,11 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login
-    // component: () => import("../views/Login/index.vue")
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: () => import("../views/Login/register")
   }
 ];
 

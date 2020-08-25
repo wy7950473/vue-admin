@@ -11,15 +11,14 @@ module.exports = {
     },
     configureWebpack: (config) => {
         config.resolve = {
+            // 自动添加文件名的后缀 
             extensions : ['.js','.json','.vue'],
             alias:{
                 '@':path.resolve(__dirname,'./src'),
                 'public':path.resolve(__dirname,'./public'),
                 'components':path.resolve(__dirname,'./src/components'),
                 'common':path.resolve(__dirname,'./src/common'),
-                'api':path.resolve(__dirname,'./src/api'),
-                'views':path.resolve(__dirname,'./src/views'),
-                'data':path.resolve(__dirname,'./src/data')
+                'views':path.resolve(__dirname,'./src/views')
             }
         }
     },

@@ -20,7 +20,7 @@
       >
         <el-form-item prop="username" class="item-from">
           <label>邮箱</label>
-          <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
+          <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input> 
         </el-form-item>
 
         <el-form-item prop="password" class="item-from">
@@ -29,6 +29,17 @@
             type="password"
             v-model="ruleForm.password"
             autocomplete="off"
+            minlength="6"
+            maxlength="20"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item prop="passwords" class="item-from" v-if="model === 'register'">
+          <label>重复密码</label>
+          <el-input
+            type="password"
+            v-model="ruleForm.passwords"
+            autocomplete=""
             minlength="6"
             maxlength="20"
           ></el-input>
@@ -54,7 +65,7 @@
   </div>
 </template>
 <script>
-import { stripscript,validateEmail,validPassword,validCode } from "@/utils/validate.js"
+import { stripscript,validateEmail,validPassword,validCode } from "@/utils/validate"
 export default {
   name: "login",
   components: {},
@@ -74,6 +85,9 @@ export default {
     };
     // 验证密码
     var validatePassword = (rule, value, callback) => {
+      // 过滤后的数据
+      this.ruleForm.password = stripscript(value);
+      value = this.ruleForm.password;
       if (value === "") {
         callback(new Error("请输入密码"));
       } else if (validPassword(value)) {
@@ -82,8 +96,24 @@ export default {
         callback();
       }
     };
+    // 验证重复密码
+    var validatePasswords = (rule, value, callback) => {
+      // 过滤后的数据
+      this.ruleForm.passwords = stripscript(value);
+      value = this.ruleForm.passwords;
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else if (value !== this.ruleForm.password) {
+        callback(new Error("两次密码不相同"));
+      } else {
+        callback();
+      }
+    };
     // 验证验证码
     var validateCode = (rule, value, callback) => {
+      // 过滤后的数据
+      this.ruleForm.code = stripscript(value);
+      value = this.ruleForm.code;
       if (!value) {
         return callback(new Error("请输入验证码"));
       } else if (validCode(value)) {
@@ -94,18 +124,22 @@ export default {
     };
     return {
       menuTab: [
-        { txt: "登录", current: true },
-        { txt: "注册", current: false }
+        { txt: "登录", current: true ,type: 'login'},
+        { txt: "注册", current: false ,type: 'register'}
       ],
       isActive: true,
+      // 模块值
+      model: "login",
       ruleForm: {
         username: "",
         password: "",
+        passwords: "",
         code: ""
       },
       rules: {
         username: [{ validator: validateUsername, trigger: "blur" }],
         password: [{ validator: validatePassword, trigger: "blur" }],
+        passwords: [{ validator: validatePasswords, trigger: "blur" }],
         code: [{ validator: validateCode, trigger: "blur" }]
       }
     };
@@ -113,7 +147,13 @@ export default {
   methods: {
     // vue 数据驱动视频渲染
     toggleMenu(data) {
-      console.log(data);
+      this.menuTab.forEach((elem,index) => {
+        elem.current = false;
+      });
+      // 高光
+      data.current = true;
+      // 修改模块值
+      this.model = data.type;
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
