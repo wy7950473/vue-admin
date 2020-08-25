@@ -38,7 +38,7 @@
           <label>验证码</label>
           <el-row :gutter="11">
             <el-col :span="15">
-              <el-input v-model.number="ruleForm.code" minlength="6" maxlength="6"></el-input>
+              <el-input v-model="ruleForm.code" minlength="6" maxlength="6"></el-input>
             </el-col>
             <el-col :span="9">
               <el-button type="success" class="block">获取验证码</el-button>

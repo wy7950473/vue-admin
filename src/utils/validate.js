@@ -30,6 +30,6 @@ export function validPassword(password) {
  * 验证验证码
  */
 export function validCode(code) {
-    var reg = /^[a-z0-9]{6}$/;
+    var reg = /^[a-zA-Z0-9]{6}$/;
     return !reg.test(code) ? true : false;
 }
