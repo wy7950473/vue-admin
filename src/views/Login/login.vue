@@ -120,16 +120,6 @@ export default {
     };
   },
   methods: {
-    // vue 数据驱动视频渲染
-    toggleMenu(data) {
-      this.menuTab.forEach((elem,index) => {
-        elem.current = false;
-      });
-      // 高光
-      data.current = true;
-      // 修改模块值
-      this.model = data.type;
-    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
