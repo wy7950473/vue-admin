@@ -58,6 +58,11 @@ import { stripscript,validateEmail,validPassword,validCode } from "@/utils/valid
 export default {
   name: "login",
   components: {},
+  mounted() {
+    // this.toAlert(this.test);
+    this.init();
+  },
+  props:['test'],
   data() {
     // 验证用户名
     var validateUsername = (rule, value, callback) => {
@@ -120,6 +125,12 @@ export default {
     };
   },
   methods: {
+    toAlert(data){
+      alert(data);
+    },
+    init(){
+      this.$emit('name','login');
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {

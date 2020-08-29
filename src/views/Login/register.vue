@@ -112,7 +112,7 @@ export default {
       }
     };
     return {
-      isActive: true,
+      // isActive: true,
       // 模块值
       // model: "login",
       ruleForm: {

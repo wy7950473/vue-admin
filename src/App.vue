@@ -6,20 +6,25 @@
         :key="item.id" 
         :to="item.link" 
         :class="{'current':item.current,'tab':true}"
-         @click.native="toggleMenu(item)">{{item.txt}}</router-link>
+        @click.native="toggleMenu(item)"  
+        >{{item.txt}}</router-link>
       </div>
-      <router-view />
+      <router-view @name="name1" :test="'msg'"/>
     </div>
   </div>
 </template>
 <script>
 export default {
+  mounted() {
+    alert(this.name);
+  },
   data() {
     return {
       menuTab: [
         { link:'/login',txt: "登录", current: true ,type: 'login'},
         { link: '/register',txt: "注册", current: false ,type: 'register'}
-      ]
+      ],
+      name:''
     }
   },
   methods: {
@@ -30,7 +35,10 @@ export default {
       });
       // 高光
       data.current = true;
-    }  
+    },
+    name1:function(data){
+      this.name = data;
+    }
   }
 }
 </script>
