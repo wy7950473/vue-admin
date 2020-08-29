@@ -1,14 +1,14 @@
 <template>
-  <div id="login">
-    <div class="login-wrap">
-      <ul class="menu-tab">
+  <div>
+    <!-- <div class="login-wrap"> -->
+      <!-- <ul class="menu-tab">
         <li
           v-for="item in menuTab"
           :key="item.id"
           :class="{'current':item.current}"
           @click="toggleMenu(item)"
         >{{item.txt}}</li>
-      </ul>
+      </ul> -->
       <!--表单-->
       <el-form
         :model="ruleForm"
@@ -34,17 +34,6 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item prop="passwords" class="item-from" v-if="model === 'register'">
-          <label>重复密码</label>
-          <el-input
-            type="password"
-            v-model="ruleForm.passwords"
-            autocomplete=""
-            minlength="6"
-            maxlength="20"
-          ></el-input>
-        </el-form-item>
-
         <el-form-item prop="code" class="item-from">
           <label>验证码</label>
           <el-row :gutter="11">
@@ -61,7 +50,7 @@
           <el-button type="danger" class="login-btn block" @click="submitForm('ruleForm')">提交</el-button>
         </el-form-item>
       </el-form>
-    </div>
+    <!-- </div> -->
   </div>
 </template>
 <script>
@@ -96,19 +85,6 @@ export default {
         callback();
       }
     };
-    // 验证重复密码
-    var validatePasswords = (rule, value, callback) => {
-      // 过滤后的数据
-      this.ruleForm.passwords = stripscript(value);
-      value = this.ruleForm.passwords;
-      if (value === "") {
-        callback(new Error("请输入密码"));
-      } else if (value !== this.ruleForm.password) {
-        callback(new Error("两次密码不相同"));
-      } else {
-        callback();
-      }
-    };
     // 验证验证码
     var validateCode = (rule, value, callback) => {
       // 过滤后的数据
@@ -123,13 +99,13 @@ export default {
       }
     };
     return {
-      menuTab: [
-        { txt: "登录", current: true ,type: 'login'},
-        { txt: "注册", current: false ,type: 'register'}
-      ],
-      isActive: true,
+      // menuTab: [
+      //   { txt: "登录", current: true ,type: 'login'},
+      //   { txt: "注册", current: false ,type: 'register'}
+      // ],
+      // isActive: true,
       // 模块值
-      model: "login",
+      // model: "login",
       ruleForm: {
         username: "",
         password: "",
@@ -139,7 +115,6 @@ export default {
       rules: {
         username: [{ validator: validateUsername, trigger: "blur" }],
         password: [{ validator: validatePassword, trigger: "blur" }],
-        passwords: [{ validator: validatePasswords, trigger: "blur" }],
         code: [{ validator: validateCode, trigger: "blur" }]
       }
     };
@@ -169,29 +144,29 @@ export default {
 };
 </script>
 <style lang='scss' scoped>
-#login {
-  background-color: #344a5f;
-  height: 100vh;
-}
-.login-wrap {
-  width: 330px;
-  margin: auto;
-}
-.menu-tab {
-  text-align: center;
-  li {
-    display: inline-block;
-    width: 88px;
-    line-height: 36px;
-    font-size: 14px;
-    color: #fff;
-    border-radius: 2px;
-    cursor: pointer;
-  }
-  .current {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-}
+// #login {
+//   background-color: #344a5f;
+//   height: 100vh;
+// }
+// .login-wrap {
+//   width: 330px;
+//   margin: auto;
+// }
+// .menu-tab {
+//   text-align: center;
+//   li {
+//     display: inline-block;
+//     width: 88px;
+//     line-height: 36px;
+//     font-size: 14px;
+//     color: #fff;
+//     border-radius: 2px;
+//     cursor: pointer;
+//   }
+//   .current {
+//     background-color: rgba(0, 0, 0, 0.1);
+//   }
+// }
 .login-from {
   margin-top: 29px;
   label {
