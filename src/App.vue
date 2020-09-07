@@ -9,37 +9,76 @@
         @click.native="toggleMenu(item)"  
         >{{item.txt}}</router-link>
       </div>
-      <router-view @name="name1" :test="'msg'"/>
+      <router-view @name="getName" :test="'msg'"/>
     </div>
   </div>
 </template>
 <script>
+import {reactive,ref, isRef, toRefs, onMounted} from '@vue/composition-api'
 export default {
-  mounted() {
-    alert(this.name);
+  updated() {
+    // alert(this.name);
   },
-  data() {
-    return {
-      menuTab: [
+  setup(props,context){
+    const data = reactive([
+      {id:'1',name:'zhangsan'},
+      {id:'2',name:'lisi'}
+    ]);
+    //alert(data)
+    const test = ref('Test');
+    //alert(test.value);
+    // alert(isRef(test))
+    const data1 = reactive({
+      x:0,
+      y:10
+    });
+    // alert(data1.x)
+    const data2 = toRefs(data1);
+    // alert(data2.x.value)
+    onMounted(() => {
+      
+    });
+    const menuTab = reactive([
         { link:'/login',txt: "登录", current: true ,type: 'login'},
         { link: '/register',txt: "注册", current: false ,type: 'register'}
-      ],
-      name:''
+    ]);
+    const toggleMenu =(data =>{
+        menuTab.forEach((elem,index) => {
+          elem.current = false;
+        });
+        // 高光
+        data.current = true;
+    });
+    const name = ref('');
+    const getName =(data => {
+      name.value = data;
+    });
+    return {
+      menuTab,
+      toggleMenu,
+      getName
     }
   },
-  methods: {
+  // data() {
+  //   return {
+      // menuTab: [
+      //   { link:'/login',txt: "登录", current: true ,type: 'login'},
+      //   { link: '/register',txt: "注册", current: false ,type: 'register'}
+      // ],
+  //     name:''
+  //   }
+  // },
+  // methods: {
     // vue 数据驱动视频渲染
-    toggleMenu(data) {
-      this.menuTab.forEach((elem,index) => {
-        elem.current = false;
-      });
-      // 高光
-      data.current = true;
-    },
-    name1:function(data){
-      this.name = data;
-    }
-  }
+    // toggleMenu(data) {
+    //   this.menuTab.forEach((elem,index) => {
+    //     elem.current = false;
+    //   });
+    //   // 高光
+    //   data.current = true;
+    // },
+    
+  // }
 }
 </script>
 <style lang="scss">

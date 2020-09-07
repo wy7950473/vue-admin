@@ -129,7 +129,14 @@ export default {
       }
     };
   },
+  created(){
+    this.init();
+  },
   methods: {
+    init(){
+      this.$emit('name','register');
+      console.log("-------");
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {

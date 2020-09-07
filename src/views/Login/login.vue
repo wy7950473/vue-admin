@@ -54,34 +54,48 @@
   </div>
 </template>
 <script>
+import axios from 'axios'
+import {reactive} from '@vue/composition-api'
 import { stripscript,validateEmail,validPassword,validCode } from "@/utils/validate"
 export default {
   name: "login",
   components: {},
-  mounted() {
-    // this.toAlert(this.test);
-    this.init();
-  },
   props:['test'],
-  data() {
+  // setup(props,{refs}){
+  setup(props,context){
+
+    console.log(context);
+    const data = reactive([
+      {id:'1',name:'zhangsan'},
+      {id:'2',name:'lisi'}
+    ]);
+    //console.log(data)
+
+    const ruleForm = reactive({
+        username: "",
+        password: "",
+        passwords: "",
+        code: ""
+    });
+
     // 验证用户名
-    var validateUsername = (rule, value, callback) => {
+    let validateUsername = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入用户名"));
       } else if (validateEmail(value)) {
         callback(new Error("用户名格式有误"));
       } else {
-        if (this.ruleForm.password !== "") {
+        if (ruleForm.password !== "") {
           this.$refs.ruleForm.validateField("password");
         }
         callback();
       }
     };
     // 验证密码
-    var validatePassword = (rule, value, callback) => {
+    let validatePassword = (rule, value, callback) => {
       // 过滤后的数据
-      this.ruleForm.password = stripscript(value);
-      value = this.ruleForm.password;
+      ruleForm.password = stripscript(value);
+      value = ruleForm.password;
       if (value === "") {
         callback(new Error("请输入密码"));
       } else if (validPassword(value)) {
@@ -91,10 +105,10 @@ export default {
       }
     };
     // 验证验证码
-    var validateCode = (rule, value, callback) => {
+    let validateCode = (rule, value, callback) => {
       // 过滤后的数据
-      this.ruleForm.code = stripscript(value);
-      value = this.ruleForm.code;
+      ruleForm.code = stripscript(value);
+      value = ruleForm.code;
       if (!value) {
         return callback(new Error("请输入验证码"));
       } else if (validCode(value)) {
@@ -103,36 +117,15 @@ export default {
           callback();
       }
     };
-    return {
-      // menuTab: [
-      //   { txt: "登录", current: true ,type: 'login'},
-      //   { txt: "注册", current: false ,type: 'register'}
-      // ],
-      // isActive: true,
-      // 模块值
-      // model: "login",
-      ruleForm: {
-        username: "",
-        password: "",
-        passwords: "",
-        code: ""
-      },
-      rules: {
+
+    const rules = reactive({
         username: [{ validator: validateUsername, trigger: "blur" }],
         password: [{ validator: validatePassword, trigger: "blur" }],
         code: [{ validator: validateCode, trigger: "blur" }]
-      }
-    };
-  },
-  methods: {
-    toAlert(data){
-      alert(data);
-    },
-    init(){
-      this.$emit('name','login');
-    },
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
+    });
+
+    const submitForm = (formName => {
+      context.refs[formName].validate(valid => {
         if (valid) {
           alert("submit!");
         } else {
@@ -140,7 +133,62 @@ export default {
           return false;
         }
       });
+    })
+
+    return {
+      ruleForm,
+      rules,
+      submitForm
     }
+  },
+  data() {
+    return {
+      // menuTab: [
+      //   { txt: "登录", current: true ,type: 'login'},
+      //   { txt: "注册", current: false ,type: 'register'}
+      // ],
+      // isActive: true,
+      // 模块值
+      // model: "login",  
+    };
+  },
+  created() {
+    // this.toAlert(this.test);
+    this.init();
+  },
+  methods: {
+    // toAlert(data){
+    //   alert(data);
+    // },
+    init(){
+      this.$emit('name','login');
+    },
+    // submitForm(formName) {
+
+      // // 为给定 ID 的 user 创建请求
+      // axios.request({
+      //   url:'/user',
+      //   method:'get',
+      //   data:{
+      //     firstName: 'Fred'
+      //   }
+      // })
+      // .then(function (response) {
+      //   console.log("response");
+      // })
+      // .catch(function (error) {
+      //   console.log(error);
+      // });
+
+      // this.$refs[formName].validate(valid => {
+      //   if (valid) {
+      //     alert("submit!");
+      //   } else {
+      //     console.log("error submit!!");
+      //     return false;
+      //   }
+      // });
+    // }
   }
 };
 </script>
