@@ -41,7 +41,7 @@
               <el-input v-model="ruleForm.code" minlength="6" maxlength="6"></el-input>
             </el-col>
             <el-col :span="9">
-              <el-button type="success" class="block">获取验证码</el-button>
+              <el-button type="success" class="block" @click="getSms">获取验证码</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -54,8 +54,8 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
-import {reactive} from '@vue/composition-api'
+import { reactive, onMounted } from '@vue/composition-api'
+import { GetSms } from '@/api/login'
 import { stripscript,validateEmail,validPassword,validCode } from "@/utils/validate"
 export default {
   name: "login",
@@ -64,7 +64,7 @@ export default {
   // setup(props,{refs}){
   setup(props,context){
 
-    console.log(context);
+    // console.log(context);  
     const data = reactive([
       {id:'1',name:'zhangsan'},
       {id:'2',name:'lisi'}
@@ -124,6 +124,12 @@ export default {
         code: [{ validator: validateCode, trigger: "blur" }]
     });
 
+    // get verification code
+    const getSms = (() =>{
+      GetSms();
+    });
+
+    // commit form
     const submitForm = (formName => {
       context.refs[formName].validate(valid => {
         if (valid) {
@@ -135,10 +141,16 @@ export default {
       });
     })
 
+    onMounted(() =>{
+      // GetSms();
+      // console.log(process.env.VUE_APP_ABC);
+    });
+
     return {
       ruleForm,
       rules,
-      submitForm
+      submitForm,
+      getSms
     }
   },
   data() {

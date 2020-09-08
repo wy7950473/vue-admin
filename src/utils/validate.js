@@ -33,3 +33,8 @@ export function validCode(code) {
     var reg = /^[a-zA-Z0-9]{6}$/;
     return !reg.test(code) ? true : false;
 }
+
+/**
+ * do not use export default,multiple exports can be declared at the same time
+ * when importing a file,you need to use "{}"
+ */
