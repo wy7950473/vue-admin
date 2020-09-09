@@ -1,17 +1,17 @@
 const path = require('path');
 module.exports = {
-    // 基本配置
+    // basic configuration
     publicPath: process.env.NODE_ENV === 'production' ? '' : '/',
-    // 输出文件目录
+    // ouput file directory
     outputDir: process.env.NODE_ENV === 'production' ? 'dist' : 'devdist',
-    // eslint-loader 是否在保存的时候检查
+    // eslint-loader is it checked at the time of storage
     lintOnSave: false,
-    // webpack配置
+    // webpack configuration
     chainWebpack:(config) => {
     },
     configureWebpack: (config) => {
         config.resolve = {
-            // 自动添加文件名的后缀 
+            // automatically add suffix to file name
             extensions : ['.js','.json','.vue'],
             alias:{
                 '@':path.resolve(__dirname,'./src'),
@@ -22,36 +22,36 @@ module.exports = {
             }
         }
     },
-    // 生产环境是否生成 sourceMap 文件
+    // does the production environment generate a sourceMap file
     productionSourceMap: false,
-    // css 相关配置
+    // css related configuration
     css: {
-        // 是否使用 css 分离插件， ExtractTextPlugin
+        // do you want to use css to separate plugin， ExtractTextPlugin
         extract: true,
-        // 开启 CSS source map ?
+        // open CSS source map ?
         sourceMap: false,
-        // css 预设器配置项
+        // css preset configuration item
         loaderOptions: {
             sass: {
                 prependData:`@import './src/styles/main.scss';`
             }
         },
-        // 启用 CSS modules for all / pre-processor files.
+        // open CSS modules for all / pre-processor files.
         modules : false
     },
     //
     parallel : require('os').cpus().length > 1,
-    // PWA 插件相关配置
+    // PWA plugin related configuration
     pwa : {},
-    // webpack-dev-server 相关配置
+    // webpack-dev-server related configuration
     devServer : {
-        open: false, // 编译完成是否打开网页
-        host: '0.0.0.0', // 制定使用地址，默认 localhost,0.0.0.0 代表可以被外界访问
-        port: 8080, // 访问端口
-        https: false, // 编译失败时刷新页面
-        hot: true,  // 开启热加载
+        open: false, // do you want to open the web page after compiling 
+        host: '0.0.0.0', // make use of address，default localhost,0.0.0.0 representatives can be accessed by the outside world
+        port: 8080, // access port
+        https: false, // refresh page on compile failure
+        hot: true,  // open hot load
         hotOnly: false,
-        proxy: {  // 代理设置
+        proxy: {  // proxy configuration
             '/api': {
                 target: 'http://www.web-jshtml.cn/productapi', // API server address
                 changeOrigin: true,
@@ -60,13 +60,13 @@ module.exports = {
                 }
             }
         },
-        overlay: { // 全屏模式下是否显示脚本错误
+        overlay: { // is script error displayed in full screen mode
             warnings: true,
             errors: true 
         },
         before: app => {
         },
     },
-    // 第三方插件配置
+    // third party plugin configuration
     pluginOptions: {}
 }

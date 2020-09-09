@@ -80,12 +80,12 @@ export default {
         code: ""
     });
 
-    // 验证用户名
+    // verify username
     let validateUsername = (rule, value, callback) => {
       if (value === "") {
-        callback(new Error("请输入用户名"));
+        callback(new Error("please input username"));
       } else if (validateEmail(value)) {
-        callback(new Error("用户名格式有误"));
+        callback(new Error("username format error"));
       } else {
         if (ruleForm.password !== "") {
           this.$refs.ruleForm.validateField("password");
@@ -93,28 +93,28 @@ export default {
         callback();
       }
     };
-    // 验证密码
+    // verify password
     let validatePassword = (rule, value, callback) => {
-      // 过滤后的数据
+      // filtered data
       ruleForm.password = stripscript(value);
       value = ruleForm.password;
       if (value === "") {
-        callback(new Error("请输入密码"));
+        callback(new Error("please input password"));
       } else if (validPassword(value)) {
-        callback(new Error("密码为6至20位到数字加字母"));
+        callback(new Error("The password is 6 to 20 digits numbers plus letters"));
       } else {
         callback();
       }
     };
-    // 验证验证码
+    // verify verification code
     let validateCode = (rule, value, callback) => {
-      // 过滤后的数据
+      // filtered data
       ruleForm.code = stripscript(value);
       value = ruleForm.code;
       if (!value) {
-        return callback(new Error("请输入验证码"));
+        return callback(new Error("please input verification code"));
       } else if (validCode(value)) {
-          callback(new Error("验证码格式有误"));
+          callback(new Error("verification code format error"));
       } else {
           callback();
       }

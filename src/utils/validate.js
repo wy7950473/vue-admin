@@ -1,5 +1,5 @@
 /**
- * 过滤特殊字符
+ * filter special characters
  */
 export function stripscript(str) {
     var pattern = new RegExp("[`~!@#$^&*()=|{}':;',\\\\[\\].<>/?~！@#￥……&*（）&;—|{ }【】‘；：”“'。，、？]");
@@ -11,7 +11,7 @@ export function stripscript(str) {
 }
 
 /**
- * 验证邮箱格式
+ * verify mailbox format
  */
 export function validateEmail(email) {
     var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
@@ -19,7 +19,7 @@ export function validateEmail(email) {
 }
 
 /**
- * 验证密码
+ * verify password
  */
 export function validPassword(password) {
     var reg = /^(?!\D+$)(?![^a-zA-Z]+$)\S{6,20}$/;
@@ -27,7 +27,7 @@ export function validPassword(password) {
 }
 
 /**
- * 验证验证码
+ * verify verification code
  */
 export function validCode(code) {
     var reg = /^[a-zA-Z0-9]{6}$/;
