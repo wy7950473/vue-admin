@@ -48,6 +48,8 @@ export default {
         });
         // 高光
         data.current = true;
+        // reset form
+        // context.$refs[forName].resetFields();
     });
     const name = ref('');
     const getName =(data => {

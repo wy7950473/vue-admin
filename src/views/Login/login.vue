@@ -19,13 +19,14 @@
         size="medium"
       >
         <el-form-item prop="username" class="item-from">
-          <label>邮箱</label>
-          <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input> 
+          <label for="username">邮箱</label>
+          <el-input id="username" type="text" v-model="ruleForm.username" autocomplete="off"></el-input> 
         </el-form-item>
 
         <el-form-item prop="password" class="item-from">
-          <label>密码</label>
+          <label for="password">密码</label>
           <el-input
+            id="password"
             type="password"
             v-model="ruleForm.password"
             autocomplete="off"
@@ -35,10 +36,10 @@
         </el-form-item>
 
         <el-form-item prop="code" class="item-from">
-          <label>验证码</label>
+          <label for="code">验证码</label>
           <el-row :gutter="11">
             <el-col :span="15">
-              <el-input v-model="ruleForm.code" minlength="6" maxlength="6"></el-input>
+              <el-input id="code" v-model="ruleForm.code" minlength="6" maxlength="6"></el-input>
             </el-col>
             <el-col :span="9">
               <el-button type="success" class="block" @click="getSms">获取验证码</el-button>
@@ -47,22 +48,23 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="danger" class="login-btn block" @click="submitForm('ruleForm')">提交</el-button>
+          <el-button type="danger" class="login-btn block" @click="submitForm('ruleForm')" :disabled="loginButtonStatus">登录</el-button>
         </el-form-item>
       </el-form>
     <!-- </div> -->
   </div>
 </template>
 <script>
-import { reactive, onMounted } from '@vue/composition-api'
+import { Message } from 'element-ui'
+import { reactive, onMounted, ref } from '@vue/composition-api'
 import { GetSms } from '@/api/login'
 import { stripscript,validateEmail,validPassword,validCode } from "@/utils/validate"
 export default {
   name: "login",
   components: {},
   props:['test'],
-  // setup(props,{refs}){
-  setup(props,context){
+  setup(props,{refs,root}){
+  // setup(props,context){
 
     // console.log(context);  
     const data = reactive([
@@ -124,9 +126,33 @@ export default {
         code: [{ validator: validateCode, trigger: "blur" }]
     });
 
+    // login button disabled status 
+    const loginButtonStatus = ref(true);
+
     // get verification code
     const getSms = (() =>{
-      GetSms();
+      
+      if (ruleForm.username == "") {
+        // prompt(提示)
+        root.$message.error("The mailbox connot be empty");
+        return false;
+      }
+      // verify mialbox format
+      if (validateEmail(ruleForm.username)) {
+        // prompt(提示)
+        root.$message.error("Email format error,please reenter");
+        return false;
+      }
+      let data = {
+        username:ruleForm.username
+      }
+      // request API
+      // get verification code
+      GetSms(data).then(response => {
+        alert(response.data.resCode);
+      }).catch(error => {
+
+      });
     });
 
     // commit form
@@ -150,6 +176,7 @@ export default {
       ruleForm,
       rules,
       submitForm,
+      loginButtonStatus,
       getSms
     }
   },
