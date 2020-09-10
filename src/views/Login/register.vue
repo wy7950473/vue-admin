@@ -42,7 +42,7 @@
               <el-input v-model="ruleForm.code" minlength="6" maxlength="6"></el-input>
             </el-col>
             <el-col :span="9">
-              <el-button type="success" class="block">获取验证码</el-button>
+              <el-button type="success" class="block" @click="getSms">获取验证码</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -54,6 +54,7 @@
     </div>
 </template>
 <script>
+import { GetSms } from "@/api/login"
 import { stripscript,validateEmail,validPassword,validCode } from "@/utils/validate"
 export default {
   name: "register",
@@ -130,13 +131,40 @@ export default {
     };
   },
   created(){
-    this.init();
+    // this.init();
   },
   methods: {
     init(){
-      this.$emit('name','register');
-      console.log("-------");
+      // this.$emit('name','register');
+      // console.log("-------");
     },
+
+    // get verification code
+    getSms(){
+      // when username is empty
+      if (this.ruleForm.username = "") {
+        // prompt
+        this.$message.error("The mailbox connot be empty");
+        return false;
+      }
+      // verify username
+      if (validateEmail(this.submitForm.username)) {
+        // prompt
+        this.$message.error("Email format error,please reenter");
+        return false;
+      }
+
+      let data = {
+        username:this.submitForm.username
+      }
+
+      GetSms(data).then(response => {
+
+      }).catch(error => {
+
+      });
+    },
+
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
