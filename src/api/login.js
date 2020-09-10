@@ -1,7 +1,7 @@
 import service from "@/utils/request";
 
 // get verification code
- export function  (data){
+ export function GetSms(data){
      return service.request({
          method:"post",
          url:"/getSms/",
