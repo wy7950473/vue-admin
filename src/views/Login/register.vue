@@ -213,12 +213,15 @@ export default {
             code:this.ruleForm.code,
             module:'register'
           }
+          // call register API
           Register(requestData).then(response => {
             let data = response.data;
             this.$message({
               message:data.message,
               type:'success'
             });
+            // screen jump
+            this.$router.push({path:'/login'});
           }).catch(error => {
 
           }) 
