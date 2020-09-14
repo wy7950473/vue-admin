@@ -57,13 +57,15 @@
 <script>
 import { Message } from 'element-ui'
 import { reactive, onMounted, ref } from '@vue/composition-api'
-import { GetSms } from '@/api/login'
+import { GetSms,Login } from '@/api/login'
 import { stripscript,validateEmail,validPassword,validCode } from "@/utils/validate"
 export default {
   name: "login",
   components: {},
   props:['test'],
   setup(props,{refs,root}){
+    
+    root.$emit('name','login');
   // setup(props,context){
 
     // console.log(context);  
@@ -90,9 +92,9 @@ export default {
       } else if (validateEmail(value)) {
         callback(new Error("username format error"));
       } else {
-        if (ruleForm.password !== "") {
-          this.$refs.ruleForm.validateField("password");
-        }
+        // if (ruleForm.password !== "") {
+        //   ruleForm.validateField("password");
+        // }
         callback();
       }
     };
@@ -176,11 +178,11 @@ export default {
             // enable login button
             loginButtonStatus.value = false;
             // adhust the timer,countdown
-            countDown(60);
+            countDown(5);
           }).catch(error => {            
           
           });
-      },5000);
+      },2000);
     });
 
     // countdown
@@ -188,6 +190,9 @@ export default {
       // setTimeout  : only once
       // setIuterval : continuous implementation, need conditions to stop
       let time = number;
+      if (this.timer){
+        clearInterval(this.timer);
+      }
       timer.value = setInterval(() => {  
           if (time < 0) {
             // clear timer
@@ -204,10 +209,26 @@ export default {
     });
 
     // commit form
-    const submitForm = (formName => {
-      context.refs[formName].validate(valid => {
+    const submitForm = ((formName) => {
+      alert(11)
+      refs[formName].validate((valid) => {
         if (valid) {
-          alert("submit!");
+          let requestData = {
+            username: ruleForm.username,
+            password: ruleFrom.password,
+            code: ruleFrom.code,
+            module: 'login'
+          }
+          // login
+          Login(requestData).then(reponse => {
+            let date = reponse.data;
+            root.$message({
+              message:data.message,
+              type:'success'
+            });
+          }).catch(error => {
+
+          })
         } else {
           console.log("error submit!!");
           return false;
@@ -229,8 +250,8 @@ export default {
       getSms
     }
   },
-  data() {
-    return {
+  // data() {
+    // return {
       // menuTab: [
       //   { txt: "登录", current: true ,type: 'login'},
       //   { txt: "注册", current: false ,type: 'register'}
@@ -238,19 +259,19 @@ export default {
       // isActive: true,
       // 模块值
       // model: "login",  
-    };
-  },
+    // };
+  // },
   created() {
     // this.toAlert(this.test);
-    this.init();
+    // this.init();
   },
   methods: {
     // toAlert(data){
     //   alert(data);
     // },
-    init(){
-      this.$emit('name','login');
-    },
+    // init(){
+    //   this.$emit('name','login');
+    // },
     // submitForm(formName) {
 
       // // 为给定 ID 的 user 创建请求

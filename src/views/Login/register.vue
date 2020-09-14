@@ -138,7 +138,10 @@ export default {
     };
   },
   created(){
-    // this.init();
+    this.$emit('name','register');
+  },
+  mounted(){
+    
   },
   methods: {
     init(){
@@ -189,6 +192,10 @@ export default {
     },
     countDown(number){
       let time = number;
+      // clear timer
+      if (this.timer){
+        clearInterval(this.timer);
+      }
       this.timer = setInterval(() => {
           if (time < 0) {
             // clear timer

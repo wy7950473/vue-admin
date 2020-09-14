@@ -5,8 +5,9 @@
         <router-link v-for="item in menuTab" 
         :key="item.id" 
         :to="item.link" 
-        :class="{'current':item.current,'tab':true}"
+        :class="{'current':item.type===name,'tab':true}"
         @click.native="toggleMenu(item)"  
+        v-cloak
         >{{item.txt}}</router-link>
       </div>
       <router-view @name="getName" :test="'msg'"/>
@@ -25,39 +26,40 @@ export default {
       {id:'2',name:'lisi'}
     ]);
     //alert(data)
-    const test = ref('Test');
+    // const test = ref('Test');
     //alert(test.value);
     // alert(isRef(test))
-    const data1 = reactive({
-      x:0,
-      y:10
-    });
+    // const data1 = reactive({
+    //   x:0,
+    //   y:10
+    // });
     // alert(data1.x)
-    const data2 = toRefs(data1);
+    // const data2 = toRefs(data1);sx
     // alert(data2.x.value)
     onMounted(() => {
-      
+      // console.log(context);
+      // alert(context.root.$route.path);
     });
     const menuTab = reactive([
         { link:'/login',txt: "登录", current: true ,type: 'login'},
         { link: '/register',txt: "注册", current: false ,type: 'register'}
     ]);
-    const toggleMenu =(data =>{
-        menuTab.forEach((elem,index) => {
-          elem.current = false;
-        });
-        // 高光
-        data.current = true;
-        // reset form
-        // context.$refs[forName].resetFields();
-    });
     const name = ref('');
     const getName =(data => {
       name.value = data;
     });
+    const toggleMenu =(data =>{
+        // menuTab.forEach((elem,index) => {
+        //   elem.current = false;
+        // });
+        // data.current = true;
+        // reset form
+        // context.$refs[forName].resetFields();
+    });
     return {
       menuTab,
       toggleMenu,
+      name,
       getName
     }
   },
@@ -107,5 +109,8 @@ export default {
   .current {
     background-color: rgba(0, 0, 0, 0.1);
   }
+}
+[v-cloak] {
+    display: none;
 }
 </style>
