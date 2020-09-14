@@ -7,7 +7,7 @@ const BASEURL = process.env.NODE_ENV === 'production' ? '' : '/api';
 
 const service = axios.create({
     baseURL: BASEURL,
-    timeout: 1000,
+    timeout: 15000,
 });
 
 // Add a request interceptor

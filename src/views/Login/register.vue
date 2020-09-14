@@ -114,7 +114,7 @@ export default {
     };
     return {
       // isActive: true,
-      // 模块值
+      // model value
       // model: "login",
       ruleForm: {
         username: "",
@@ -142,24 +142,29 @@ export default {
     // get verification code
     getSms(){
       // when username is empty
-      if (this.ruleForm.username = "") {
+      if (this.ruleForm.username == "") {
         // prompt
         this.$message.error("The mailbox connot be empty");
         return false;
       }
       // verify username
-      if (validateEmail(this.submitForm.username)) {
+      if (validateEmail(this.ruleForm.username)) {
         // prompt
         this.$message.error("Email format error,please reenter");
         return false;
       }
 
       let data = {
-        username:this.submitForm.username
+        username:this.ruleForm.username,
+        module:'register'
       }
 
       GetSms(data).then(response => {
-
+        let data = response.data;
+        this.$message({
+          message:data.message,
+          type:'success'
+        });
       }).catch(error => {
 
       });

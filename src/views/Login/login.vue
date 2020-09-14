@@ -42,7 +42,7 @@
               <el-input id="code" v-model="ruleForm.code" minlength="6" maxlength="6"></el-input>
             </el-col>
             <el-col :span="9">
-              <el-button type="success" class="block" @click="getSms">获取验证码</el-button>
+              <el-button type="success" class="block" @click="getSms" :disabled="codeButton.status">{{codeButton.text}}</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -79,6 +79,9 @@ export default {
         passwords: "",
         code: ""
     });
+
+    // countdown
+    const timer = ref(null);
 
     // verify username
     let validateUsername = (rule, value, callback) => {
@@ -129,6 +132,13 @@ export default {
     // login button disabled status 
     const loginButtonStatus = ref(true);
 
+    const codeButton = reactive({
+      // verification code button available status
+      status:false,
+      // verification code button value
+      text:'获取验证码'
+    })
+
     // get verification code
     const getSms = (() =>{
       
@@ -144,15 +154,53 @@ export default {
         return false;
       }
       let data = {
-        username:ruleForm.username
+        username:ruleForm.username,
+        // module:'login'
       }
-      // request API
-      // get verification code
-      GetSms(data).then(response => {
-        alert(response.data.resCode);
-      }).catch(error => {
 
-      });
+      // modify verification code button status
+      codeButton.status = true;
+      // modify verification code buton value
+      codeButton.text = '发送中';
+
+      // request delay
+      setTimeout(() => {
+          // request API
+          // get verification code
+          GetSms(data).then(response => {
+            let data = response.data;
+            root.$message({
+              message:data.message,
+              type:'success'
+            });
+            // enable login button
+            loginButtonStatus.value = false;
+            // adhust the timer,countdown
+            countDown(60);
+          }).catch(error => {            
+          
+          });
+      },5000);
+    });
+
+    // countdown
+    const countDown = ((number) => {
+      // setTimeout  : only once
+      // setIuterval : continuous implementation, need conditions to stop
+      let time = number;
+      timer.value = setInterval(() => {  
+          if (time < 0) {
+            // clear timer
+            clearInterval(timer.value);
+            // modify verification code button status
+            codeButton.status = false;
+            // modify verification code buton value
+            codeButton.text = '重新发送';
+          } else {
+            codeButton.text = `倒计时${time}秒`;  
+          } 
+          time--;
+      },1000);
     });
 
     // commit form
@@ -177,6 +225,7 @@ export default {
       rules,
       submitForm,
       loginButtonStatus,
+      codeButton,
       getSms
     }
   },
