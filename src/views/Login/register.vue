@@ -42,19 +42,19 @@
               <el-input v-model="ruleForm.code" minlength="6" maxlength="6"></el-input>
             </el-col>
             <el-col :span="9">
-              <el-button type="success" class="block" @click="getSms">获取验证码</el-button>
+              <el-button type="success" class="block" @click="getSms" :disabled="codeButton.status">{{codeButton.text}}</el-button>
             </el-col>
           </el-row>
         </el-form-item>
 
         <el-form-item>
-          <el-button type="danger" class="login-btn block" @click="submitForm('ruleForm')">注册</el-button>
+          <el-button type="danger" class="login-btn block" @click="submitForm('ruleForm')" :disabled="registerButtonStatus">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
 </template>
 <script>
-import { GetSms } from "@/api/login"
+import { GetSms,Register } from "@/api/login"
 import { stripscript,validateEmail,validPassword,validCode } from "@/utils/validate"
 export default {
   name: "register",
@@ -122,6 +122,13 @@ export default {
         passwords: "",
         code: ""
       },
+      registerButtonStatus:true,
+      codeButton:{
+        status: false,
+        text: '获取验证码'
+      },
+      // timer
+      timer:null,
       rules: {
         username: [{ validator: validateUsername, trigger: "blur" }],
         password: [{ validator: validatePassword, trigger: "blur" }],
@@ -138,7 +145,6 @@ export default {
       // this.$emit('name','register');
       // console.log("-------");
     },
-
     // get verification code
     getSms(){
       // when username is empty
@@ -159,21 +165,63 @@ export default {
         module:'register'
       }
 
-      GetSms(data).then(response => {
-        let data = response.data;
-        this.$message({
-          message:data.message,
-          type:'success'
+      // modify verification code button status
+      this.codeButton.status = true;
+      // modify verification code button value
+      this.codeButton.text = '发送中';
+
+      // request delay
+      setTimeout(() => {
+        GetSms(data).then(response => {
+          let data = response.data;
+          this.$message({
+            message:data.message,
+            type:'success'
+          });
+          // modify verification code button status
+          this.registerButtonStatus = false;
+          // adhust the timer
+          this.countDown(5);
+        }).catch(error => {
+
         });
-      }).catch(error => {
-
-      });
+      },2000);
     },
-
+    countDown(number){
+      let time = number;
+      this.timer = setInterval(() => {
+          if (time < 0) {
+            // clear timer
+            clearInterval(this.timer);
+            // modify verification code button status
+            this.codeButton.status = false;
+            // modify verification code button text
+            this.codeButton.text = '重新发送';
+          } else {
+            // modify verification code button text
+            this.codeButton.text = `倒计时${time}秒`;
+          }
+          time--;
+      },1000);
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+          let requestData = {
+            username:this.ruleForm.username,
+            password:this.ruleForm.password,
+            code:this.ruleForm.code,
+            module:'register'
+          }
+          Register(requestData).then(response => {
+            let data = response.data;
+            this.$message({
+              message:data.message,
+              type:'success'
+            });
+          }).catch(error => {
+
+          }) 
         } else {
           console.log("error submit!!");
           return false;

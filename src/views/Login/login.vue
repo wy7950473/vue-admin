@@ -155,7 +155,7 @@ export default {
       }
       let data = {
         username:ruleForm.username,
-        // module:'login'
+        module:'login'
       }
 
       // modify verification code button status
