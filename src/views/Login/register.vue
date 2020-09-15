@@ -141,13 +141,9 @@ export default {
     this.$emit('name','register');
   },
   mounted(){
-    
+
   },
   methods: {
-    init(){
-      // this.$emit('name','register');
-      // console.log("-------");
-    },
     // get verification code
     getSms(){
       // when username is empty
@@ -186,7 +182,10 @@ export default {
           // adhust the timer
           this.countDown(5);
         }).catch(error => {
-
+          // modify verification code button status
+          this.codeButton.status = false;
+          // modify verification code button value
+          this.codeButton.text = '获取验证码';
         });
       },2000);
     },
@@ -220,7 +219,7 @@ export default {
             code:this.ruleForm.code,
             module:'register'
           }
-          // call register API
+          // call register API 
           Register(requestData).then(response => {
             let data = response.data;
             this.$message({

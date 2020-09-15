@@ -17,25 +17,15 @@
 <script>
 import {reactive,ref, isRef, toRefs, onMounted} from '@vue/composition-api'
 export default {
-  updated() {
-    // alert(this.name);
-  },
   setup(props,context){
     const data = reactive([
       {id:'1',name:'zhangsan'},
       {id:'2',name:'lisi'}
     ]);
-    //alert(data)
-    // const test = ref('Test');
-    //alert(test.value);
-    // alert(isRef(test))
-    // const data1 = reactive({
-    //   x:0,
-    //   y:10
-    // });
-    // alert(data1.x)
-    // const data2 = toRefs(data1);sx
-    // alert(data2.x.value)
+    const name = ref('');
+    const getName = data => {
+      name.value = data;
+    };
     onMounted(() => {
       // console.log(context);
       // alert(context.root.$route.path);
@@ -44,10 +34,6 @@ export default {
         { link:'/login',txt: "登录", current: true ,type: 'login'},
         { link: '/register',txt: "注册", current: false ,type: 'register'}
     ]);
-    const name = ref('');
-    const getName =(data => {
-      name.value = data;
-    });
     const toggleMenu =(data =>{
         // menuTab.forEach((elem,index) => {
         //   elem.current = false;
@@ -62,27 +48,7 @@ export default {
       name,
       getName
     }
-  },
-  // data() {
-  //   return {
-      // menuTab: [
-      //   { link:'/login',txt: "登录", current: true ,type: 'login'},
-      //   { link: '/register',txt: "注册", current: false ,type: 'register'}
-      // ],
-  //     name:''
-  //   }
-  // },
-  // methods: {
-    // vue 数据驱动视频渲染
-    // toggleMenu(data) {
-    //   this.menuTab.forEach((elem,index) => {
-    //     elem.current = false;
-    //   });
-    //   // 高光
-    //   data.current = true;
-    // },
-    
-  // }
+  }
 }
 </script>
 <style lang="scss">

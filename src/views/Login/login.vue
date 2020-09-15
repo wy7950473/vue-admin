@@ -1,89 +1,92 @@
 <template>
   <div>
-    <!-- <div class="login-wrap"> -->
-      <!-- <ul class="menu-tab">
-        <li
-          v-for="item in menuTab"
-          :key="item.id"
-          :class="{'current':item.current}"
-          @click="toggleMenu(item)"
-        >{{item.txt}}</li>
-      </ul> -->
-      <!--表单-->
-      <el-form
-        :model="ruleForm"
-        status-icon
-        :rules="rules"
-        ref="ruleForm"
-        class="login-from"
-        size="medium"
-      >
-        <el-form-item prop="username" class="item-from">
-          <label for="username">邮箱</label>
-          <el-input id="username" type="text" v-model="ruleForm.username" autocomplete="off"></el-input> 
-        </el-form-item>
+    <!--表单-->
+    <el-form
+      :model="ruleForm"
+      status-icon
+      :rules="rules"
+      ref="ruleForm"
+      class="login-from"
+      size="medium"
+    >
+      <el-form-item prop="username" class="item-from">
+        <label for="username">邮箱</label>
+        <el-input id="username" type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
+      </el-form-item>
 
-        <el-form-item prop="password" class="item-from">
-          <label for="password">密码</label>
-          <el-input
-            id="password"
-            type="password"
-            v-model="ruleForm.password"
-            autocomplete="off"
-            minlength="6"
-            maxlength="20"
-          ></el-input>
-        </el-form-item>
+      <el-form-item prop="password" class="item-from">
+        <label for="password">密码</label>
+        <el-input
+          id="password"
+          type="password"
+          v-model="ruleForm.password"
+          autocomplete="off"
+          minlength="6"
+          maxlength="20"
+        ></el-input>
+      </el-form-item>
 
-        <el-form-item prop="code" class="item-from">
-          <label for="code">验证码</label>
-          <el-row :gutter="11">
-            <el-col :span="15">
-              <el-input id="code" v-model="ruleForm.code" minlength="6" maxlength="6"></el-input>
-            </el-col>
-            <el-col :span="9">
-              <el-button type="success" class="block" @click="getSms" :disabled="codeButton.status">{{codeButton.text}}</el-button>
-            </el-col>
-          </el-row>
-        </el-form-item>
+      <el-form-item prop="code" class="item-from">
+        <label for="code">验证码</label>
+        <el-row :gutter="11">
+          <el-col :span="15">
+            <el-input id="code" v-model="ruleForm.code" minlength="6" maxlength="6"></el-input>
+          </el-col>
+          <el-col :span="9">
+            <el-button
+              type="success"
+              class="block"
+              @click="getSms"
+              :disabled="codeButton.status"
+            >{{codeButton.text}}</el-button>
+          </el-col>
+        </el-row>
+      </el-form-item>
 
-        <el-form-item>
-          <el-button type="danger" class="login-btn block" @click="submitForm('ruleForm')" :disabled="loginButtonStatus">登录</el-button>
-        </el-form-item>
-      </el-form>
+      <el-form-item>
+        <el-button
+          type="danger"
+          class="login-btn block"
+          @click="submitForm('ruleForm')"
+          :disabled="loginButtonStatus"
+        >登录</el-button>
+      </el-form-item>
+    </el-form>
     <!-- </div> -->
   </div>
 </template>
 <script>
-import { Message } from 'element-ui'
-import { reactive, onMounted, ref } from '@vue/composition-api'
-import { GetSms,Login } from '@/api/login'
-import { stripscript,validateEmail,validPassword,validCode } from "@/utils/validate"
+import { Message } from "element-ui";
+import { reactive, onMounted, ref } from "@vue/composition-api";
+import { GetSms, Login } from "@/api/login";
+import {
+  stripscript,
+  validateEmail,
+  validPassword,
+  validCode
+} from "@/utils/validate";
 export default {
   name: "login",
   components: {},
-  props:['test'],
-  setup(props,{refs,root}){
-    
-    root.$emit('name','login');
-  // setup(props,context){
-
-    // console.log(context);  
+  props: ["test"],
+  // setup(props,{refs,root}){
+  setup(props, context) {
+    // console.log(context);
     const data = reactive([
-      {id:'1',name:'zhangsan'},
-      {id:'2',name:'lisi'}
+      { id: "1", name: "zhangsan" },
+      { id: "2", name: "lisi" }
     ]);
     //console.log(data)
 
     const ruleForm = reactive({
-        username: "",
-        password: "",
-        passwords: "",
-        code: ""
+      username: "",
+      password: "",
+      code: ""
     });
 
     // countdown
     const timer = ref(null);
+    context.emit("name", "login");
 
     // verify username
     let validateUsername = (rule, value, callback) => {
@@ -92,9 +95,6 @@ export default {
       } else if (validateEmail(value)) {
         callback(new Error("username format error"));
       } else {
-        // if (ruleForm.password !== "") {
-        //   ruleForm.validateField("password");
-        // }
         callback();
       }
     };
@@ -106,7 +106,9 @@ export default {
       if (value === "") {
         callback(new Error("please input password"));
       } else if (validPassword(value)) {
-        callback(new Error("The password is 6 to 20 digits numbers plus letters"));
+        callback(
+          new Error("The password is 6 to 20 digits numbers plus letters")
+        );
       } else {
         callback();
       }
@@ -119,128 +121,132 @@ export default {
       if (!value) {
         return callback(new Error("please input verification code"));
       } else if (validCode(value)) {
-          callback(new Error("verification code format error"));
+        callback(new Error("verification code format error"));
       } else {
-          callback();
+        callback();
       }
     };
 
     const rules = reactive({
-        username: [{ validator: validateUsername, trigger: "blur" }],
-        password: [{ validator: validatePassword, trigger: "blur" }],
-        code: [{ validator: validateCode, trigger: "blur" }]
+      username: [{ validator: validateUsername, trigger: "blur" }],
+      password: [{ validator: validatePassword, trigger: "blur" }],
+      code: [{ validator: validateCode, trigger: "blur" }]
     });
 
-    // login button disabled status 
+    // login button disabled status
     const loginButtonStatus = ref(true);
 
     const codeButton = reactive({
       // verification code button available status
-      status:false,
+      status: false,
       // verification code button value
-      text:'获取验证码'
-    })
+      text: "获取验证码"
+    });
 
     // get verification code
-    const getSms = (() =>{
-      
+    const getSms = () => {
       if (ruleForm.username == "") {
         // prompt(提示)
-        root.$message.error("The mailbox connot be empty");
+        context.root.$message.error("The mailbox connot be empty");
         return false;
       }
       // verify mialbox format
       if (validateEmail(ruleForm.username)) {
         // prompt(提示)
-        root.$message.error("Email format error,please reenter");
+        context.root.$message.error("Email format error,please reenter");
         return false;
       }
       let data = {
-        username:ruleForm.username,
-        module:'login'
-      }
+        username: ruleForm.username,
+        module: "login"
+      };
 
       // modify verification code button status
       codeButton.status = true;
       // modify verification code buton value
-      codeButton.text = '发送中';
+      codeButton.text = "发送中";
 
       // request delay
       setTimeout(() => {
-          // request API
-          // get verification code
-          GetSms(data).then(response => {
+        // request API
+        // get verification code
+        GetSms(data)
+          .then(response => {
             let data = response.data;
-            root.$message({
-              message:data.message,
-              type:'success'
+            context.root.$message({
+              message: data.message,
+              type: "success"
             });
             // enable login button
             loginButtonStatus.value = false;
             // adhust the timer,countdown
             countDown(5);
-          }).catch(error => {            
-          
+          })
+          .catch(error => {
+            // modify verification code button status
+            codeButton.status = false;
+            // modify verification code button value
+            codeButton.text = "获取验证码";
           });
-      },2000);
-    });
+      }, 2000);
+    };
 
     // countdown
-    const countDown = ((number) => {
+    const countDown = number => {
       // setTimeout  : only once
       // setIuterval : continuous implementation, need conditions to stop
       let time = number;
-      if (this.timer){
-        clearInterval(this.timer);
+      if (timer.value) {
+        clearInterval(timer.value);
       }
-      timer.value = setInterval(() => {  
-          if (time < 0) {
-            // clear timer
-            clearInterval(timer.value);
-            // modify verification code button status
-            codeButton.status = false;
-            // modify verification code buton value
-            codeButton.text = '重新发送';
-          } else {
-            codeButton.text = `倒计时${time}秒`;  
-          } 
-          time--;
-      },1000);
-    });
+      timer.value = setInterval(() => {
+        if (time < 0) {
+          // clear timer
+          clearInterval(timer.value);
+          // modify verification code button status
+          codeButton.status = false;
+          // modify verification code buton value
+          codeButton.text = "重新发送";
+        } else {
+          codeButton.text = `倒计时${time}秒`;
+        }
+        time--;
+      }, 1000);
+    };
+
+    // login
+    const login = () => {
+      let requestData = {
+        username:ruleForm.username,
+        password:ruleForm.password,
+        code:ruleForm.code,
+        module:"login"
+      }
+      Login(requestData).then(reponse => {
+          let data = reponse.data;
+          context.root.$message({
+            message:data.message,
+            type:"success"
+          });
+        }).catch(error => {
+
+        });
+    };
 
     // commit form
-    const submitForm = ((formName) => {
-      alert(11)
-      refs[formName].validate((valid) => {
+    const submitForm = formName => {
+      context.refs[formName].validate(valid => {
         if (valid) {
-          let requestData = {
-            username: ruleForm.username,
-            password: ruleFrom.password,
-            code: ruleFrom.code,
-            module: 'login'
-          }
-          // login
-          Login(requestData).then(reponse => {
-            let date = reponse.data;
-            root.$message({
-              message:data.message,
-              type:'success'
-            });
-          }).catch(error => {
-
-          })
+          login();
         } else {
           console.log("error submit!!");
           return false;
         }
       });
-    })
+    };
+    onMounted(() => {
 
-    onMounted(() =>{
-      // GetSms();
-      // console.log(process.env.VUE_APP_ABC);
     });
-
     return {
       ruleForm,
       rules,
@@ -248,83 +254,11 @@ export default {
       loginButtonStatus,
       codeButton,
       getSms
-    }
-  },
-  // data() {
-    // return {
-      // menuTab: [
-      //   { txt: "登录", current: true ,type: 'login'},
-      //   { txt: "注册", current: false ,type: 'register'}
-      // ],
-      // isActive: true,
-      // 模块值
-      // model: "login",  
-    // };
-  // },
-  created() {
-    // this.toAlert(this.test);
-    // this.init();
-  },
-  methods: {
-    // toAlert(data){
-    //   alert(data);
-    // },
-    // init(){
-    //   this.$emit('name','login');
-    // },
-    // submitForm(formName) {
-
-      // // 为给定 ID 的 user 创建请求
-      // axios.request({
-      //   url:'/user',
-      //   method:'get',
-      //   data:{
-      //     firstName: 'Fred'
-      //   }
-      // })
-      // .then(function (response) {
-      //   console.log("response");
-      // })
-      // .catch(function (error) {
-      //   console.log(error);
-      // });
-
-      // this.$refs[formName].validate(valid => {
-      //   if (valid) {
-      //     alert("submit!");
-      //   } else {
-      //     console.log("error submit!!");
-      //     return false;
-      //   }
-      // });
-    // }
+    };
   }
 };
 </script>
 <style lang='scss' scoped>
-// #login {
-//   background-color: #344a5f;
-//   height: 100vh;
-// }
-// .login-wrap {
-//   width: 330px;
-//   margin: auto;
-// }
-// .menu-tab {
-//   text-align: center;
-//   li {
-//     display: inline-block;
-//     width: 88px;
-//     line-height: 36px;
-//     font-size: 14px;
-//     color: #fff;
-//     border-radius: 2px;
-//     cursor: pointer;
-//   }
-//   .current {
-//     background-color: rgba(0, 0, 0, 0.1);
-//   }
-// }
 .login-from {
   margin-top: 29px;
   label {
