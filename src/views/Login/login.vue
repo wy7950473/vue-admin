@@ -230,7 +230,7 @@ export default {
             type:"success"
           });
           // screen jump
-          context.root.$router.push({path:"/conlose"});
+          context.root.$router.push({path:"/console"});
         }).catch(error => {
 
         });

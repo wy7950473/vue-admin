@@ -7,22 +7,37 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    // redirect: "login"
+    redirect: "index"
   },
   {
-    path: "/login",
-    name: "Login",
-    component: Login
-  },
-  {
-    path: "/register",
-    name: "Register",
-    component: () => import("../views/Login/register")
+    path: "/index",
+    name: "Index",
+    redirect:'/login',
+    component: () => import("../views/index"),
+    children:[
+      {
+        path: "/login",
+        name: "Login",
+        component: Login
+      },
+      {
+        path: "/register",
+        name: "Register",
+        component: () => import("../views/Login/register")
+      }
+    ]
   },
   {
     path: "/console",
     name: "Console",
-    component: () => import("../views/Console/index")
+    component: () => import("../views/Layout/index"),
+    children:[
+      {
+        path:"/console",
+        name:"ConsoleIndex",
+        component: () => import("../views/Console/index")
+      }
+    ]
   }
 ];
 
