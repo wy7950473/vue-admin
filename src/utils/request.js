@@ -11,7 +11,7 @@ const service = axios.create({
 });
 
 // Add a request interceptor
-service.interceptors.request.use(function (config) {
+service.interceptors.request.use(function (config) { 
     // Do something before request is sent
     return config;
   }, function (error) {
@@ -24,7 +24,7 @@ service.interceptors.response.use(function (response) {
 
   // Do something with response data
 
-    let data = response.data;
+    let data = response.data; 
     if (data.resCode != 0) {
       Message.error(data.message);
       return Promise.reject(data);

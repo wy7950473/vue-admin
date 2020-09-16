@@ -54,6 +54,7 @@
     </div>
 </template>
 <script>
+import sha1 from "js-sha1"
 import { GetSms,Register } from "@/api/login"
 import { stripscript,validateEmail,validPassword,validCode } from "@/utils/validate"
 export default {
@@ -158,7 +159,7 @@ export default {
         this.$message.error("Email format error,please reenter");
         return false;
       }
-
+ 
       let data = {
         username:this.ruleForm.username,
         module:'register'
@@ -179,7 +180,7 @@ export default {
           });
           // modify verification code button status
           this.registerButtonStatus = false;
-          // adhust the timer
+          // adhust the timer      
           this.countDown(5);
         }).catch(error => {
           // modify verification code button status
@@ -209,13 +210,13 @@ export default {
           }
           time--;
       },1000);
-    },
+    },     
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let requestData = {
             username:this.ruleForm.username,
-            password:this.ruleForm.password,
+            password:sha1(this.ruleForm.password),
             code:this.ruleForm.code,
             module:'register'
           }

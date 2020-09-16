@@ -56,6 +56,7 @@
   </div>
 </template>
 <script>
+import sha1 from "js-sha1"
 import { Message } from "element-ui";
 import { reactive, onMounted, ref } from "@vue/composition-api";
 import { GetSms, Login } from "@/api/login";
@@ -218,7 +219,7 @@ export default {
     const login = () => {
       let requestData = {
         username:ruleForm.username,
-        password:ruleForm.password,
+        password:sha1(ruleForm.password),
         code:ruleForm.code,
         module:"login"
       }
@@ -228,6 +229,8 @@ export default {
             message:data.message,
             type:"success"
           });
+          // screen jump
+          context.root.$router.push({path:"/conlose"});
         }).catch(error => {
 
         });
