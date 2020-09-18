@@ -8,6 +8,14 @@ module.exports = {
     lintOnSave: false,
     // webpack configuration
     chainWebpack:(config) => {
+        const svgRule = config.module.rule("svg");
+        svgRule.uses.clear();
+        svgRule.use("svg-sprite-loader")
+            .loader("svg-sprite-loader")
+            .options({
+                symbolId:"icon-[name]",
+                include:["./src/icons"]
+            });
     },
     configureWebpack: (config) => {
         config.resolve = {
@@ -18,7 +26,8 @@ module.exports = {
                 'public':path.resolve(__dirname,'./public'),
                 'components':path.resolve(__dirname,'./src/components'),
                 'common':path.resolve(__dirname,'./src/common'),
-                'views':path.resolve(__dirname,'./src/views')
+                'views':path.resolve(__dirname,'./src/views'),
+                'vue':'vue/dist/vue.js'
             }
         }
     },
