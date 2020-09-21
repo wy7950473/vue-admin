@@ -1,5 +1,6 @@
 <template>
   <div id="nav-wrap">
+    <img src="../../../assets/images/logo.png" alt="">
     <el-menu
       default-active="1-4-1"
       class="el-menu-vertical-demo menu-wrap"
@@ -14,7 +15,7 @@
       <template v-for="(item,index) in routes">
         <el-submenu v-if="!item.hidden" :key="item.id" :index="index + ''">
           <template slot="title">
-            <i class="el-icon-location"></i>
+            <svg-icon :iconClass="item.meta.icon" :className="item.meta.icon"/>
             <span slot="title">{{item.meta.name}}</span>
           </template>
           <el-menu-item
@@ -25,7 +26,6 @@
         </el-submenu>
       </template>
     </el-menu>
-    <test />
   </div>
 </template>
 
@@ -49,6 +49,9 @@ export default {
       // console.log(key, keyPath);
     };
 
+    console.log("---" + root.$store.state.isCollapse);
+    console.log("+++" + root.$store.state.getters.count);
+
     return {
       isCollapse,
       routes,
@@ -69,9 +72,16 @@ export default {
   width: $navMenu;
   height: 100vh;
   background-color: #344a5f;
+  svg {
+    font-size: 20px;
+    margin-right: 10px;
+  }
+  img {
+    width: 112px;
+    margin-left: 55px;
+  }
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 250px;
-  min-height: 400px;
 }
 </style>

@@ -2,7 +2,7 @@ import Vue from "vue";
 import SvgIcon from "./SvgIcon";
 
 // define global component
-Vue.component('test',SvgIcon);
+Vue.component('svg-icon',SvgIcon);
 
 // parsing files
 /**
@@ -13,7 +13,7 @@ Vue.component('test',SvgIcon);
  */
 const req = require.context('./svg',false,/\.svg$/);
 const requireAll = requireContext => {
-    console.log(requireContext.keys());
+    // console.log(requireContext.keys());
     return requireContext.keys().map(requireContext);
 }
 requireAll(req);

@@ -46,7 +46,8 @@ const routes = [
     name: "Console",
     redirect:"consoleIndex",
     meta:{
-      name:"控制台"
+      name:"控制台",
+      icon:"console"
     },
     component: () => import("../views/Layout/index"),
     children:[
@@ -65,7 +66,8 @@ const routes = [
     name:"Info",
     component: () => import("../views/Layout/index"),
     meta:{
-      name:"信息管理"
+      name:"信息管理",
+      icon:"info"
     },
     children: [
       {
@@ -90,7 +92,8 @@ const routes = [
     path:"/user",
     name:"User",
     meta:{
-      name:"用户管理"
+      name:"用户管理",
+      icon:"user"
     },
     component: () => import("../views/Layout/index"),
     children: [
