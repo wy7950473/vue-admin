@@ -9,7 +9,12 @@
 </template>
 
 <script>
-export default {};
+export default {
+  name: "layoutMain",
+  setup(props,{root}){
+      
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -22,7 +27,18 @@ export default {};
   bottom: 0;
   border-bottom: none;
   background-color: #f7f7f7;
+  @include webkit(transition,all .3s ease 0s);
   -webkit-box-sizing: border;
+}
+.open{
+  #main-wrap {
+    left: $navMenu;
+  }
+}
+.close{
+  #main-wrap {
+    left: $navMenuMin;
+  }
 }
 .main-content {
   width: 100%;

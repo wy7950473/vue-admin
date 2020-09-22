@@ -3,10 +3,27 @@
     padding-left: 50px !important;
 
     &.is-active {
-        background-color: rgba(245, 108, 108, 0.2) !important;
+        // background-color: rgba(245, 108, 108, 0.2) !important;
+        background-color: $mainColor !important;
     }
 }
 
-#nav-wrap /deep/ .is-active .el-submenu__title {
+#nav-wrap .is-opened /deep/ .is-active .el-submenu__title {
     background-color: $mainColor !important;
+}
+
+.close #nav-wrap /deep/ .el-submenu__title:hover {
+    background-color: $mainColor !important;
+}
+
+body /deep/ .el-menu--vertical {
+    
+
+        background-color: red !important;
+
+        
+    
+    // .el-menu-item{
+    //     background-color: $mainColor !important;
+    // }
 }

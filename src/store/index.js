@@ -5,13 +5,17 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    isCollapse: false,
-    count: 10
+    isCollapse: JSON.parse(window.sessionStorage.getItem("isCollapse")) || false
   },
   getters:{
-    count: state => state.count + 10
+    
   },
   mutations: {
+    SET_COLLPASE(state){
+      state.isCollapse = !state.isCollapse;
+      // HTML5 local storage
+      window.sessionStorage.setItem('isCollapse',JSON.stringify(state.isCollapse));
+    }
   },
   actions: {
   },

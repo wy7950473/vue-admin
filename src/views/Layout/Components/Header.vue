@@ -1,6 +1,6 @@
 <template>
   <div id="header-wrap">
-    <div class="pull-left header-icon">
+    <div class="pull-left header-icon" @click="navMenuState">
       <svg-icon iconClass="menu" className="menu" />
     </div>
     <div class="pull-right header-icon">
@@ -14,7 +14,18 @@
 </template>
 
 <script>
-export default {};
+export default {
+  name: "layoutHeader",
+  setup(props,{root}){
+    const navMenuState = () => {
+      root.$store.commit('SET_COLLPASE');
+    }
+
+    return {
+      navMenuState
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -26,8 +37,19 @@ export default {};
   left: $navMenu;
   height: 75px;
   background-color: #fff;
-  -webkit-box-shadow: 0 3px 16px 0 rgba(0, 0, 0, 0.1);
   line-height: 75px;
+  @include webkit(box-shadow,0 3px 16px 0 rgba(0, 0, 0, 0.1));
+  @include webkit(transition,all .3s ease 0s);
+}
+.open{
+  #header-wrap {
+    left: $navMenu;
+  }
+}
+.close{
+  #header-wrap {
+    left: $navMenuMin;
+  }
 }
 .header-icon {
   padding: 0 32px;
