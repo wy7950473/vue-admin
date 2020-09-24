@@ -56,7 +56,7 @@
   </div>
 </template>
 <script>
-import sha1 from "js-sha1"
+import sha1 from "js-sha1";
 import { Message } from "element-ui";
 import { reactive, onMounted, ref } from "@vue/composition-api";
 import { GetSms, Login } from "@/api/login";
@@ -218,23 +218,24 @@ export default {
     // login
     const login = () => {
       let requestData = {
-        username:ruleForm.username,
-        password:sha1(ruleForm.password),
-        code:ruleForm.code,
-        module:"login"
-      }
-      Login(requestData).then(reponse => {
-          let data = reponse.data;
+        username: ruleForm.username,
+        password: sha1(ruleForm.password),
+        code: ruleForm.code,
+        module: "login"
+      };
+      context.root.$store.dispatch("app/login", requestData).then(response => {
+          let data = response.data;
           context.root.$message({
-            message:data.message,
-            type:"success"
+            message: data.message,
+            type: "success"
           });
           // screen jump
-          context.root.$router.push({path:"/console"});
-        }).catch(error => {
+          context.root.$router.push({ path: "/console" });
+        })
+        .catch(error => {
 
         });
-    };
+     };
 
     // commit form
     const submitForm = formName => {
@@ -247,9 +248,7 @@ export default {
         }
       });
     };
-    onMounted(() => {
-
-    });
+    onMounted(() => {});
     return {
       ruleForm,
       rules,

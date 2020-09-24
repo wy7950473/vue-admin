@@ -16,14 +16,10 @@
     background-color: $mainColor !important;
 }
 
-body /deep/ .el-menu--vertical {
-    
+.el-menu--vertical .el-menu-item {
+    background-color: #344a5f !important;
+}
 
-        background-color: red !important;
-
-        
-    
-    // .el-menu-item{
-    //     background-color: $mainColor !important;
-    // }
+.el-menu--vertical .el-menu-item:hover {
+    background-color: $mainColor !important;
 }

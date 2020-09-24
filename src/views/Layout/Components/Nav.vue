@@ -34,7 +34,7 @@ export default {
   setup(props, { root }) {
 
     // computed
-    const isCollapse = computed(() => root.$store.state.isCollapse);
+    const isCollapse = computed(() => root.$store.state.app.isCollapse);
 
     // router
     const routes = reactive(root.$router.options.routes);

@@ -24,7 +24,7 @@ service.interceptors.response.use(function (response) {
 
   // Do something with response data
 
-    let data = response.data; 
+    let data = response.data;  
     if (data.resCode != 0) {
       Message.error(data.message);
       return Promise.reject(data);
