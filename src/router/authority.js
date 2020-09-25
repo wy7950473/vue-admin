@@ -1,5 +1,9 @@
 import router from "./index";
-import { getToken } from "../utils/app";
+import { getToken,removeToken,removeUsername } from "@/utils/app";
+import store from "@/store/index"
+
+// 
+const whiteRouter = ['/login'];
 
 /**
  * to : next page
@@ -9,13 +13,18 @@ import { getToken } from "../utils/app";
 router.beforeEach((to,from,next) => {
 
     if (getToken()) {
-        console.log('token exists');
+        if (to.path === '/login') {
+            removeToken();
+            removeUsername();
+            store.commit('app/SET_TOKEN','');
+            store.commit('app/SET_USERNAME','');
+        }
+        next();
     } else {
-        console.log('token does not exist');
+        if (whiteRouter.indexOf(to.path) !== -1) {
+            next();
+        } else {
+            next('/login');
+        }
     }
-
-    console.log(to);
-    console.log(from);
-    console.log(next);
-    next();
   })

@@ -62,7 +62,7 @@ module.exports = {
         hotOnly: false,
         proxy: {  // proxy configuration
             '/api': {
-                target: 'http://www.web-jshtml.cn/productapi', // API server address
+                target: 'http://www.web-jshtml.cn/productapi/token', // API server address
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api': ''
