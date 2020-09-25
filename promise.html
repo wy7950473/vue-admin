@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // resolve,reject,all,race
+        // let promise = new Promise((resolve,reject) => {
+        //     resolve(11);
+        // }); 
+
+        // promise.then(response => {
+        //     alert(response+'成功');
+        // }).catch(error => {
+        //     alert('失败');
+        // });
+
+        // chain
+        function promise(status){
+            return new Promise((resolve,reject) => {
+                if(status){
+                    resolve(22);
+                }
+                if(!status){
+                    reject(33);
+                }
+                
+            });
+        }
+
+        function promise2(status){
+            return new Promise((resolve,reject) => {
+                if(status){
+                    resolve(44);
+                }
+                if(!status){
+                    reject(55);
+                }
+                
+            });
+        }
+
+        // promise(true).then(response => {
+        //     alert(response);
+        //     return promise2(true);
+        // }).then(response => {
+        //     alert(response );
+        // }).catch(error => {
+        //     alert(error);
+        // });
+
+        // 'then' is called only if both are successful 
+        // Promise.all([promise(true),promise2(false)]).then(response => {
+        //     alert('都成功');
+        // }).catch(error => {
+        //     alert('有方法执行失败');
+        // });
+
+        // whenever one returns 'resolve',it will call back 'then'
+        // but the first one to returns 'reject' will call back 'catch'
+        Promise.race([promise(true),promise2(false)]).then(response => {
+            alert('都成功');
+        }).catch(error => {
+            alert('有方法执行失败');
+        })
+    </script>
+</body>
+</html>

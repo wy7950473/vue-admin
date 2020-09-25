@@ -1,0 +1,25 @@
+.el-submenu .el-menu-item {
+    font-size: 14px;
+    padding-left: 50px !important;
+
+    &.is-active {
+        // background-color: rgba(245, 108, 108, 0.2) !important;
+        background-color: $mainColor !important;
+    }
+}
+
+#nav-wrap .is-opened /deep/ .is-active .el-submenu__title {
+    background-color: $mainColor !important;
+}
+
+.close #nav-wrap /deep/ .el-submenu__title:hover {
+    background-color: $mainColor !important;
+}
+
+.el-menu--vertical .el-menu-item {
+    background-color: #344a5f !important;
+}
+
+.el-menu--vertical .el-menu-item:hover {
+    background-color: $mainColor !important;
+}
