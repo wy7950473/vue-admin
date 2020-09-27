@@ -1,5 +1,7 @@
 <template>
-    <div>信息分类</div>
+    <div>
+         
+    </div>
 </template>
 
 <script>

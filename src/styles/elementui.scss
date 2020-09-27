@@ -23,3 +23,16 @@
 .el-menu--vertical .el-menu-item:hover {
     background-color: $mainColor !important;
 }
+
+div.el-table{
+    th,td{
+        text-align: center;
+    }
+    th{
+        font-weight: bold;
+        color: #344a5f;
+    }
+    td{
+        font-size: 14px;
+    }
+}
