@@ -7,7 +7,9 @@ import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import "./icons/index";
 import "./router/authority";
+import global from "@/utils/global";
 
+Vue.use(global);
 Vue.use(ElementUI);
 Vue.use(VueCompositionApi);
 Vue.config.productionTip = false;
