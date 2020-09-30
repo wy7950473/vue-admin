@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Message } from  "element-ui";
+import { getToken,getUsername } from "@/utils/app";
 
 // create axios,assignment variable service
 // Front end to API address: http://www.web-jshtml.cn/productApi
@@ -13,6 +14,9 @@ const service = axios.create({
 // Add a request interceptor
 service.interceptors.request.use(function (config) { 
     // Do something before request is sent
+    // set token
+    config.headers['Tokey'] = getToken();
+    config.headers['Username'] = getUsername();
     return config;
   }, function (error) {
     // Do something with request error

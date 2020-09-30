@@ -1,7 +1,19 @@
-// 列表
+import service from "@/utils/request";
 
-// 新增
+// add first level classification
+export function addFirstCategory(data){
+    return service.request({
+        method:"post",
+        url:"/news/addFirstCategory/",
+        data
+    });
+}
 
-// 编辑
-
-// 删除
+// get category info
+export function getCategoryInfo(data){
+    return service.request({
+        method:"post",
+        url:"/news/getCategory/",
+        data
+    })
+}
