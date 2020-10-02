@@ -17,3 +17,21 @@ export function getCategoryInfo(data){
         data
     })
 }
+
+// delete category
+export function DeleteCategory(data) {
+    return service.request({
+        method:"post",
+        url:"/news/deleteCategory/",
+        data
+    });
+}
+
+// edit category
+export function EditCategory(data) {
+    return service.request({
+        method:"post",
+        url:"/news/editCategory/",
+        data
+    });
+}
