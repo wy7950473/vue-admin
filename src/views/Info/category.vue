@@ -52,13 +52,16 @@
 
 <script>
 import { global } from "@/utils/global_V3.0";
-import { onMounted, reactive,ref } from '@vue/composition-api';
+import { onMounted, reactive,ref, watch } from '@vue/composition-api';
 import { addFirstCategory,getCategoryInfo,DeleteCategory,EditCategory } from "@/api/news";
+import { common } from "@/api/common";
 export default {
     name:"infoCategory",
     setup(props,{root,refs}){
 
         const { confirm } = global();
+        const { getInfoCategory,categoryInfo} = common();
+
         // 
         const category_first = ref(true);
 
@@ -236,8 +239,12 @@ export default {
             })
         }
 
+        watch(() => categoryInfo.item,(value) => {
+            category.item = value;
+        });
+
         onMounted(() => {
-            getCategory();
+            getInfoCategory();
         });
 
         return {
