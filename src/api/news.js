@@ -1,5 +1,23 @@
 import service from "@/utils/request";
 
+// add info
+export function AddInfo(data) {
+    return service.request({
+        method:"post",
+        url:"/news/add/",
+        data
+    });
+};
+
+// get info
+export function GetList(data) {
+    return service.request({
+        method:"post",
+        url:"/news/getList/",
+        data
+    });
+}
+
 // add first level classification
 export function addFirstCategory(data){
     return service.request({

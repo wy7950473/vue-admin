@@ -61,11 +61,11 @@
     <div class="black-space-30"></div>
 
     <!-- 表格 -->
-    <el-table :data="tableData" border style="width: 100%" class="table-wrap">
+    <el-table :data="tableData.item" border style="width: 100%" class="table-wrap">
       <el-table-column type="selection" width="40"></el-table-column>
       <el-table-column prop="title" label="标题" width="430"></el-table-column>
-      <el-table-column prop="category" label="类型" width="130"></el-table-column>
-      <el-table-column prop="date" label="日期" width="200"></el-table-column>
+      <el-table-column prop="categoryId" label="类型" width="130"></el-table-column>
+      <el-table-column prop="createDate" label="日期" width="200"></el-table-column>
       <el-table-column prop="user" label="管理员" width="115"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -88,20 +88,21 @@
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :page-sizes="[100, 200, 300, 400]"
-          layout="total,prev,sizes, pager, next,jumper"
-          :total="1000"
+          :page-size="5"
+          :page-sizes="[5, 10, 20, 50, 100]"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
         ></el-pagination>
       </el-col>
     </el-row>
 
     <!-- 新增弹窗 -->
-    <DialogInfo :flag.sync="dialogInfo" @close="close" />
+    <DialogInfo :flag.sync="dialogInfo" @close="close" :category="options.category"/>
   </div>
 </template>
 
 <script>
-import { getCategoryInfo } from "@/api/news";
+import { getCategoryInfo,GetList } from "@/api/news";
 import DialogInfo from "./dialog/info";
 import { reactive, ref, onMounted, watchEffect,watch } from "@vue/composition-api";
 import { global } from "@/utils/global_V3.0";
@@ -117,58 +118,39 @@ export default {
       category:[]
     });
 
-    const tableData = reactive([
-      {
-        title: "2016-05-02",
-        category: "王小虎",
-        date: "上海市普陀区金沙江路 1518 弄",
-        user: "管理员"
-      },
-      {
-        title: "2016-05-02",
-        category: "王小虎",
-        date: "上海市普陀区金沙江路 1518 弄",
-        user: "管理员"
-      },
-      {
-        title: "2016-05-02",
-        category: "王小虎",
-        date: "上海市普陀区金沙江路 1518 弄",
-        user: "管理员"
-      },
-      {
-        title: "2016-05-02",
-        category: "王小虎",
-        date: "上海市普陀区金沙江路 1518 弄",
-        user: "管理员"
-      }
-    ]);
+    const tableData = reactive({
+      item:[]
+    });
 
     const searchOptions = reactive([
       { value: "id", label: "ID" },
       { value: "title", label: "标题" }
     ]);
 
+    const page = reactive({
+      pageNumber:1,
+      pageSize:5
+    })
+
     const categoryValue = ref("");
-
     const dateValue = ref("");
-
     const search_key = ref("id");
-
     const search_keyWord = ref("");
-
     const dialogInfo = ref(false);
+    const total = ref(0);
 
     const handleSizeChange = value => {
-      console.log("---" + value);
+      page.pageSize = value;
     };
 
     const handleCurrentChange = value => {
-      console.log("+++" + value);
+      page.pageNumber = value;
+      getList();
     };
 
     const close = data => {
       dialogInfo.value = data;
+      getList();
     };
 
     const deleteItem = () => {
@@ -189,17 +171,38 @@ export default {
       });
     };
 
+    const getList = () => {
+      let requestData = {
+        categoryId:'',
+        startTime:'',
+        endTime:"",
+        title:"",
+        id:"",
+        pageNumber:page.pageNumber,
+        pageSize:page.pageSize
+      }
+      GetList(requestData).then(response => {
+          let data = response.data.data;
+          tableData.item = data.data;
+          //
+          total.value = data.total;
+      }).catch(error => {
+
+      });
+    }
+
     watch(() => categoryInfo.item,(value) => {
       options.category = value;
     })
 
     onMounted(() => {
-      // getInfoCategory();
-      root.$store.dispatch("common/getInfoCategory").then(response => {
-        console.log(response.data.data.data);
-      }).catch(error => {
+      getInfoCategory();
+      // root.$store.dispatch("common/getInfoCategory").then(response => {
+      //   console.log(response.data.data.data);
+      // }).catch(error => {
 
-      });
+      // });
+      getList();
     });
 
     const getCategory = () => {
@@ -222,6 +225,7 @@ export default {
       options,
       tableData,
       searchOptions,
+      total,
       // ref
       categoryValue,
       dateValue,
