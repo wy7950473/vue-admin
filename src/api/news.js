@@ -18,6 +18,15 @@ export function GetList(data) {
     });
 }
 
+// delete info
+export function DeleteInfo(data) {
+    return service.request({
+        method:"post",
+        url:"/news/deleteInfo/",
+        data
+    });
+}
+
 // add first level classification
 export function addFirstCategory(data){
     return service.request({
