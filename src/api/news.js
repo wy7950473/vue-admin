@@ -27,6 +27,15 @@ export function DeleteInfo(data) {
     });
 }
 
+// edit info
+export function EditInfo(data) {
+    return service.request({
+        method:"post",
+        url:"/news/editInfo/",
+        data
+    })
+}
+
 // add first level classification
 export function addFirstCategory(data){
     return service.request({
@@ -59,6 +68,23 @@ export function EditCategory(data) {
     return service.request({
         method:"post",
         url:"/news/editCategory/",
+        data
+    });
+}
+
+// add children category
+export function  AddChildrenCategory(data) {
+    return service.request({
+        method:"post",
+        url:"/news/addChildrenCategory/",
+        data
+    });
+}
+
+export function GetCategoryAll(data) {
+    return service.request({
+        method:"post",
+        url:"/news/getCategoryAll/",
         data
     });
 }

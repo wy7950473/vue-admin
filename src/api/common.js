@@ -1,4 +1,4 @@
-import { getCategoryInfo } from "@/api/news";
+import { getCategoryInfo,GetCategoryAll } from "@/api/news";
 import { reactive } from "@vue/composition-api";
 
 export function common() {
@@ -15,8 +15,17 @@ export function common() {
         });
     }
 
+    const getInfoCategoryAll = () => {
+        GetCategoryAll({}).then(response => {
+            categoryInfo.item = response.data.data;
+        }).catch(error => {
+
+        });
+    }
+
     return {
         getInfoCategory,
+        getInfoCategoryAll,
         categoryInfo
     }
 }

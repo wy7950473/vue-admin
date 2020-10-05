@@ -78,7 +78,7 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="danger" size="mini" @click="deleteItem(scope.row.id)">删除</el-button>
-          <el-button type="success" size="mini">编辑</el-button>
+          <el-button type="success" size="mini" @click="editInfo(scope.row.id)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -106,12 +106,16 @@
 
     <!-- 新增弹窗 -->
     <DialogInfo :flag.sync="dialogInfo" @close="close" :category="options.category" />
+
+    <!-- 修稿弹窗 -->
+    <DialogEditInfo :flag.sync="dialog_info_edit" :id="infoId" @close="close" :category="options.category" @getList="getList"/>
   </div>
 </template>
 
 <script>
 import { getCategoryInfo, GetList, DeleteInfo } from "@/api/news";
 import DialogInfo from "./dialog/info";
+import DialogEditInfo from "./dialog/edit";
 import {
   reactive,
   ref,
@@ -124,9 +128,9 @@ import { common } from "@/api/common";
 import { timestampToTime } from "@/utils/common";
 export default {
   name: "infoIndex",
-  components: { DialogInfo },
+  components: { DialogInfo,DialogEditInfo },
   setup(props, { root }) {
-    const { getInfoCategory, categoryInfo } = common();
+    const { getInfoCategory, categoryInfo,getInfoCategoryAll } = common();
 
     const options = reactive({
       category: []
@@ -152,8 +156,10 @@ export default {
     const search_key = ref("id");
     const search_keyWord = ref("");
     const dialogInfo = ref(false);
+    const dialog_info_edit = ref(false);
     const total = ref(0);
     const deleteInfoId = ref('');
+    const infoId = ref('');
 
     const handleSizeChange = value => {
       page.pageSize = value;
@@ -166,6 +172,7 @@ export default {
 
     const close = data => {
       dialogInfo.value = data;
+      dialog_info_edit.value = data;
       getList();
     };
 
@@ -245,7 +252,6 @@ export default {
         .then(response => {
           let data = response.data.data;
           tableData.item = data.data;
-          console.log(response.data.data.data.length);
           //
           total.value = data.total;
           loadingData.value = false;
@@ -266,6 +272,11 @@ export default {
       )[0];
       return categoryData.category_name;
     };
+
+    const editInfo = (id) => {
+      dialog_info_edit.value = true;
+      infoId.value = id;
+    }
 
     watch(
       () => categoryInfo.item,
@@ -308,6 +319,8 @@ export default {
       search_key,
       search_keyWord,
       dialogInfo,
+      dialog_info_edit,
+      infoId,
       // method
       handleSizeChange,
       handleCurrentChange,
@@ -317,7 +330,8 @@ export default {
       toData,
       toCategory,
       handleSelectionChange,
-      getList
+      getList,
+      editInfo
     };
   }
 };

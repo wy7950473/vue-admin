@@ -13,7 +13,8 @@
                                 <div class="button-group">
                                     <el-button size="mini" round type="danger" 
                                         @click="editCategory({data:firstItem,type:'category_first_edit'})">编辑</el-button>
-                                    <el-button size="mini" round type="success">添加子级</el-button>
+                                    <el-button size="mini" round type="success" 
+                                        @click="handlerAddChildren({data:firstItem,type:'category_children_add'})">添加子级</el-button>
                                     <el-button size="mini" round type=""
                                         @click="deleteCategoryComfirm(firstItem.id)">删除</el-button>
                                 </div>
@@ -53,14 +54,14 @@
 <script>
 import { global } from "@/utils/global_V3.0";
 import { onMounted, reactive,ref, watch } from '@vue/composition-api';
-import { addFirstCategory,getCategoryInfo,DeleteCategory,EditCategory } from "@/api/news";
+import { addFirstCategory,getCategoryInfo,DeleteCategory,EditCategory,AddChildrenCategory,GetCategoryAll } from "@/api/news";
 import { common } from "@/api/common";
 export default {
     name:"infoCategory",
     setup(props,{root,refs}){
 
         const { confirm } = global();
-        const { getInfoCategory,categoryInfo} = common();
+        const { getInfoCategory,categoryInfo,getInfoCategoryAll} = common();
 
         // 
         const category_first = ref(true);
@@ -93,6 +94,9 @@ export default {
             if (submit_button_type.value == 'category_first_edit'){
                 editFirstCategory();
             }
+            if (submit_button_type.value == 'category_children_add'){
+                editChildrenCategory();
+            }
         };
 
         const AddFirstCategory = () => {
@@ -123,6 +127,16 @@ export default {
             });
         }
 
+        const handlerAddChildren = (params) => {
+            category.current = params.data;
+            submit_button_type.value = params.type;
+            category_children_disabled.value = false;
+            category_first_disabled.value = true;
+            from.categoryName = params.data.category_name;
+            submit_button_disabled.value = false;
+            category_children.value = true;
+        }
+
         const updateButtonSttus = () => {
             submit_button_loading.value = false;
             from.categoryName = '';
@@ -131,6 +145,7 @@ export default {
 
         // 
         const addFirst = (params) => {
+            from.categoryName = '';
             submit_button_type.value = params.type;
             category_first.value = true;
             category_children.value = false;
@@ -239,12 +254,40 @@ export default {
             })
         }
 
+        const editChildrenCategory = () => {
+            if (!from.secCategoryName){
+                root.$message({
+                    message:"子级分类名称不能为空!",
+                    type:"warning"
+                });
+                return false;
+            }
+            let requestData = {
+                categoryName:from.secCategoryName,
+                parentId:category.current.id
+            }
+            AddChildrenCategory(requestData).then(response => {
+                let data = response.data;
+                if (data.resCode === 0){
+                    root.$message({
+                        message:data.message,
+                        type:"success"
+                    })
+                }
+                getInfoCategoryAll();
+                from.secCategoryName = '';
+            }).catch(error => {
+
+            });
+        }
+
         watch(() => categoryInfo.item,(value) => {
             category.item = value;
         });
 
         onMounted(() => {
-            getInfoCategory();
+            // getInfoCategory();
+            getInfoCategoryAll();
         });
 
         return {
@@ -262,7 +305,8 @@ export default {
             submit,
             addFirst,
             deleteCategoryComfirm,
-            editCategory
+            editCategory,
+            handlerAddChildren
         }
     }
 }
