@@ -16,16 +16,16 @@
                                     <el-button size="mini" round type="success" 
                                         @click="handlerAddChildren({data:firstItem,type:'category_children_add'})">添加子级</el-button>
                                     <el-button size="mini" round type=""
-                                        @click="deleteCategoryComfirm(firstItem.id)">删除</el-button>
+                                        @click="deleteCategoryComfirm(firstItem.id,'parent')">删除</el-button>
                                 </div>
                             </h4>
                             <ul v-if="firstItem.children">
                                 <li v-for="childrenItem in firstItem.children" :key="childrenItem.id">
                                     {{childrenItem.category_name}}
                                     <div class="button-group">
-                                        <el-button size="mini" round type="danger">编辑</el-button>
+                                        <el-button size="mini" round type="danger" @click="EditChildrenCategory(childrenItem,'category_children_edit')">编辑</el-button>
                                         <el-button size="mini" round type="" 
-                                        >删除</el-button>
+                                        @click="deleteCategoryComfirm(childrenItem.id,'children',firstItem.id)">删除</el-button>
                                     </div>
                                 </li>
                             </ul>
@@ -65,7 +65,6 @@ export default {
 
         // 
         const category_first = ref(true);
-
         //
         const category_children = ref(true);
         const category_first_disabled = ref(true);
@@ -73,6 +72,8 @@ export default {
         const submit_button_disabled = ref(true);
         const deleteId = ref('');
         const submit_button_type = ref('');
+        const delete_type = ref('');
+        const parent_id = ref('');
 
         const from = reactive({
           categoryName: '',
@@ -96,6 +97,9 @@ export default {
             }
             if (submit_button_type.value == 'category_children_add'){
                 editChildrenCategory();
+            }
+            if (submit_button_type.value == 'category_children_edit'){
+                EditChildrenCategoryInfo();
             }
         };
 
@@ -164,8 +168,10 @@ export default {
         }
 
         // delet category
-        const deleteCategoryComfirm = (categoryId) =>{
+        const deleteCategoryComfirm = (categoryId,type,parentId) =>{
             deleteId.value = categoryId;
+            delete_type.value = type;
+            parent_id.value = parentId;
             confirm({
                 content:"确认删除选择的数据，确认后将无法恢复!",
                 tip:"警告",
@@ -188,11 +194,24 @@ export default {
                         message:data.message,
                         type:'success'
                     });
-                    let index = category.item.findIndex(item => {
-                        item.id == deleteId.value;
-                    });
-                    category.item.splice(index,1);
-
+                    if (delete_type.value === 'parent'){
+                        let index = category.item.findIndex(item => {
+                            item.id == deleteId.value;
+                        });
+                        category.item.splice(index,1);
+                    }
+                    if (delete_type.value === 'children') {
+                        category.item.forEach(item => {
+                            if (item.id == parent_id.value){
+                                let index = item.children.findIndex(item => {
+                                    item.id == deleteId.value;
+                                });
+                                item.children.splice(index,1);
+                                delete_type.value = '';
+                                parent_id.value = '';
+                            }
+                        });
+                    }
                     // let newData = category.item.filter(item => item.id != deleteId.value);
                     // category.item = newData;
                 }
@@ -219,7 +238,7 @@ export default {
         const editFirstCategory = () => {
             if (category.current.length == 0){
                 root.$message({
-                    message:"为选择分类!!",
+                    message:"未选择分类!!",
                     type:"error"
                 });
                 return false;
@@ -247,6 +266,45 @@ export default {
                     // newData[0].category_name = data.data.data.categoryName;
                     // 
                     from.categoryName = '';
+                    category.current = [];
+                }
+            }).catch(error => {
+
+            })
+        }
+
+        const EditChildrenCategory = (data,type) => {
+            category.current = data;
+            category_first.value = false;
+            category_children.value = true;
+            category_children_disabled.value = false;
+            submit_button_disabled.value = false;
+            from.secCategoryName = category.current.category_name;
+            submit_button_type.value = type;
+        }
+
+        const EditChildrenCategoryInfo = () =>{
+            if (!from.secCategoryName) {
+                root.$message({
+                    message:"子级分类名称不能为空!",
+                    type:"warning"
+                });
+            }
+            let requestData = {
+                id:category.current.id,
+                categoryName:from.secCategoryName
+            }
+            EditCategory(requestData).then(response => {
+                let data = response.data;
+                if (data.resCode === 0){
+                    root.$message({
+                        message:data.message,
+                        type:'success'
+                    });
+                    category.current.category_name = data.data.data.categoryName;
+                    // let newData = category.item.filter(item => item.id == category.current.id);
+                    // newData[0].category_name = data.data.data.categoryName;
+                    from.secCategoryName = '';
                     category.current = [];
                 }
             }).catch(error => {
@@ -306,7 +364,8 @@ export default {
             addFirst,
             deleteCategoryComfirm,
             editCategory,
-            handlerAddChildren
+            handlerAddChildren,
+            EditChildrenCategory
         }
     }
 }

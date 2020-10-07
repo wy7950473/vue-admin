@@ -79,7 +79,10 @@
         <template slot-scope="scope">
           <el-button type="danger" size="mini" @click="deleteItem(scope.row.id)">删除</el-button>
           <el-button type="success" size="mini" @click="editInfo(scope.row.id)">编辑</el-button>
-          <el-button type="success" size="mini" @click="editInfo(scope.row.id)">编辑详情</el-button>
+          <!-- <router-link :to="{path:'/infoDetailed',query:{id:scope.row.id,title:scope.row.title}}" class="margin-left-10">
+            <el-button type="success" size="mini">编辑详情</el-button>
+          </router-link> -->
+          <el-button type="success" size="mini" @click="detailed(scope.row)" >编辑详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -164,6 +167,7 @@ export default {
 
     const handleSizeChange = value => {
       page.pageSize = value;
+      getList();
     };
 
     const handleCurrentChange = value => {
@@ -307,6 +311,29 @@ export default {
         .catch(error => {});
     };
 
+    const detailed = (data) => {
+      root.$store.commit("infoDetailed/UPDATE_STATE_VALUE",{
+        id:{
+          value:data.id,
+          sessionKey:"infoId",
+          session:true
+        },
+        title:{
+          value:data.title,
+          sessionKey:"infoTitle",
+          session:true
+        }
+      });
+
+      root.$router.push({
+        name:"InfoDetailed",
+        params:{
+          id:data.id,
+          title:data.title
+        }
+      });
+    }
+
     return {
       // reactive
       options,
@@ -332,7 +359,8 @@ export default {
       toCategory,
       handleSelectionChange,
       getList,
-      editInfo
+      editInfo,
+      detailed
     };
   }
 };
