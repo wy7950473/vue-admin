@@ -1,5 +1,6 @@
 import { getCategoryInfo,GetCategoryAll } from "@/api/news";
 import { reactive } from "@vue/composition-api";
+import service from "@/utils/request";
 
 export function common() {
 
@@ -28,4 +29,12 @@ export function common() {
         getInfoCategoryAll,
         categoryInfo
     }
+}
+
+export function QiniuToken(data) {
+    return service.request({
+        method:"post",
+        url:"/uploadImgToken/",
+        data
+    })
 }
