@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import app from "./modules/app";
 import common from "./modules/common";
-import infoDetailed from "./modules/infDetailed";
+import infoDetailed from "./modules/infoDetailed";
 
 Vue.use(Vuex);
 

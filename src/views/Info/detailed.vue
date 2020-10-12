@@ -14,17 +14,7 @@
       <el-input v-model="form.title"></el-input>
     </el-form-item>
     <el-form-item label="缩略图:">
-      <el-upload
-        class="avatar-uploader"
-        action="http://up-z2.qiniup.com"
-        :data="data.uploadKey"
-        :show-file-list="false"
-        :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload"
-      >
-        <img v-if="data.imageUrl" :src="data.imageUrl" class="avatar" />
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-      </el-upload>
+      <uploadImage :imageUrl.sync="data.imageUrl" :config="uploadImgConfig"/>
     </el-form-item>
     <el-form-item label="发布日期:">
       <el-col :span="11">
@@ -54,17 +44,24 @@
 <script>
 import { onMounted, reactive, ref } from "@vue/composition-api";
 import { GetList, EditInfo } from "@/api/news";
-import { QiniuToken } from "@/api/common";
 import { timestampToTime } from "@/utils/common";
 import { quillEditor } from "vue-quill-editor";
+import uploadImage from "@/components/Uploading/index";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 export default {
   name: "infoDetailed",
-  components: { quillEditor },
+  components: { quillEditor,uploadImage },
   setup(props, { root }) {
     const submitLoading = ref(false);
+
+    const uploadImgConfig = reactive({
+      uploadUrl:"http://up-z2.qiniup.com",
+      accesskey:"s6ljJ1m65W18vQma0boMF4Rx1z39akCP_UK6VphK",
+      secretkey:"rq8lv_9SkZNVm1UquLpY97CktYkT64IKMrccX3-8",
+      buckety:"my-vueadmin"
+    });
 
     const data = reactive({
       id:
@@ -86,14 +83,7 @@ export default {
       title: "",
       dateTime: "",
       content: "",
-      name: "",
-      region: "",
-      date1: "",
-      date2: "",
-      delivery: false,
-      type: [],
-      resource: "",
-      desc: ""
+      name: ""
     });
 
     // get category info
@@ -151,48 +141,9 @@ export default {
         });
     };
 
-    const getQiniuToken = () => {
-        let requestData = {
-            "accesskey":"s6ljJ1m65W18vQma0boMF4Rx1z39akCP_UK6VphK",
-            "secretkey":"rq8lv_9SkZNVm1UquLpY97CktYkT64IKMrccX3-8",
-            "buckety":"my-vueadmin"
-        }
-        QiniuToken(requestData).then(response => {
-            data.uploadKey.token = response.data.data.token;
-            // console.log(data.uploadKey.token);
-        }).catch(error => {
-
-        });
-    }
-
-    const  handleAvatarSuccess = (res, file) => {
-        // console.log("res:"+res);
-        data.imageUrl = `${root.$store.getters["common/qiniuUrl"]}${res.key}`;
-    }
-    
-    const beforeAvatarUpload = (file) => {
-        console.log(file);
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
-
-        if (!isJPG) {
-          root.$message.error('上传头像图片只能是 JPG 格式!');
-        }
-        if (!isLt2M) {
-          root.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-
-        let suffix = file.name;
-        let key = encodeURI(`${suffix}`);
-        data.uploadKey.key = key;
-
-        return isJPG && isLt2M;
-    }
-
     onMounted(() => {
         getInfoCategory();
         getInfo();
-        getQiniuToken();
     });
 
     return {
@@ -201,38 +152,14 @@ export default {
       // reactive
       form,
       data,
+      uploadImgConfig,
       // method
-      onSubmit,
-      handleAvatarSuccess,
-      beforeAvatarUpload
+      onSubmit
     };
   }
 };
 </script>
 
 <style scoped>
-.avatar-uploader{
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  width: 180px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
+
 </style>
