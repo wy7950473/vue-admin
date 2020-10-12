@@ -3,7 +3,7 @@ import { getToken,removeToken,removeUsername } from "@/utils/app";
 import store from "@/store/index"
 
 // 
-const whiteRouter = ['/login'];
+const whiteRouter = ['/login','/register'];
 
 /**
  * to : next page
