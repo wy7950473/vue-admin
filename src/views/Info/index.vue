@@ -36,14 +36,15 @@
         <div class="label-wrap key-word">
           <label for>关键字:</label>
           <div class="wrap-content">
-            <el-select v-model="search_key" style="width:100%">
+            <!-- <el-select v-model="search_key" style="width:100%">
               <el-option
                 v-for="item in searchOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
               ></el-option>
-            </el-select>
+            </el-select> -->
+            <SelectVue :config="optionData.configOption" :search_key.sync="search_key"/>
           </div>
         </div>
       </el-col>
@@ -120,6 +121,7 @@
 import { getCategoryInfo, GetList, DeleteInfo } from "@/api/news";
 import DialogInfo from "./dialog/info";
 import DialogEditInfo from "./dialog/edit";
+import SelectVue from "@/components/Select/index";
 import {
   reactive,
   ref,
@@ -132,12 +134,16 @@ import { common } from "@/api/common";
 import { timestampToTime } from "@/utils/common";
 export default {
   name: "infoIndex",
-  components: { DialogInfo,DialogEditInfo },
+  components: { DialogInfo,DialogEditInfo,SelectVue },
   setup(props, { root }) {
     const { getInfoCategory, categoryInfo,getInfoCategoryAll } = common();
 
     const options = reactive({
       category: []
+    });
+
+    const optionData = reactive({
+      configOption:["id","title"]
     });
 
     const tableData = reactive({
@@ -157,7 +163,7 @@ export default {
     const loadingData = ref(true);
     const categoryValue = ref("");
     const dateValue = ref("");
-    const search_key = ref("id");
+    const search_key = ref("");
     const search_keyWord = ref("");
     const dialogInfo = ref(false);
     const dialog_info_edit = ref(false);
@@ -341,6 +347,7 @@ export default {
       searchOptions,
       total,
       loadingData,
+      optionData,
       // ref
       categoryValue,
       dateValue,
