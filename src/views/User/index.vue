@@ -65,7 +65,14 @@ export default {
                     { label:"禁启用状态",field:"status",columnType:"slot",slotName:"status"},
                     { label:"操作",columnType:"slot",slotName:"operation"}
                 ],
-                requestUrl:""
+                requestData:{
+                    url:"getUserList",
+                    method:"post",
+                    data:{
+                        pageNumber:1,
+                        pageSize:5
+                    }
+                }
             }
         })
 

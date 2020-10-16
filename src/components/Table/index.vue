@@ -19,7 +19,11 @@
 </template>
 
 <script>
-import { onBeforeMount, reactive } from '@vue/composition-api'
+import { onBeforeMount, reactive,watch } from '@vue/composition-api';
+import { requestUrl } from "@/api/requestUrl";
+import { loadTableData } from "@/api/common";
+import { tableLoadData } from "./loadTableData";
+import { recordPage } from "./recordPage";
 export default {
     name:"tableIndex",
     props:{
@@ -30,34 +34,31 @@ export default {
     },
     setup(props,{root}){
 
+        const { tableData,loadThisData } = tableLoadData();
+
+        const { pageData,page } = recordPage();
+
         // console.log(config.tHead);
 
         const data = reactive({
             tableConfig:{
                 selection: true,
                 recordCheckbox:true,
+                requestData:{},
                 tHead:[]
             },
-            tableData:[{
-                email: '2016-05-02',
-                name: '王小虎',
-                phone:"152222",
-                address: '上海市普陀区金沙江路 1518 弄',
-                role:""
-            },
-            {
-                email: '2016-05-02',
-                name: '王小虎',
-                phone:"152222",
-                address: '上海市普陀区金沙江路 1518 弄',
-                role:""
-            }]
+            tableData:[]
         });
+
+        watch(() => tableData.item,(value) => {
+            data.tableData = value;
+        })
 
         const initTableConfig = () => {
             let configData = props.config;
+            let keys = Object.keys(data.tableConfig);
             for (let key in configData){
-                if (data.tableConfig[key]) {
+                if (keys.includes(key)) {
                     data.tableConfig[key] = configData[key];
                 }
             }
@@ -65,6 +66,8 @@ export default {
 
         onBeforeMount(() => {
             initTableConfig();
+            loadThisData(data.tableConfig.requestData);
+            page();
         });
         
         return {
