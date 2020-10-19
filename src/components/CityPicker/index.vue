@@ -7,13 +7,19 @@
         </el-select>
       </el-col>
       <el-col :span="6">
-        <el-select></el-select>
+        <el-select v-model="data.cityValue" @change="handlerCity">
+          <el-option v-for="item in data.cityData" :key="item.CITY_CODE" :value="item.CITY_CODE" :label="item.CITY_NAME"/>
+        </el-select>
       </el-col>
       <el-col :span="6">
-        <el-select></el-select>
+        <el-select v-model="data.areaValue" @change="handlerStreet">
+          <el-option v-for="item in data.areaData" :key="item.AREA_CODE" :value="item.AREA_CODE" :label="item.AREA_NAME"/>
+        </el-select>
       </el-col>
       <el-col :span="6">
-        <el-select></el-select>
+        <el-select v-model="data.streetValue">
+           <el-option v-for="item in data.streetData" :key="item.STREET_CODE" :value="item.STREET_CODE" :label="item.STREET_NAME"/>
+        </el-select>
       </el-col>
     </el-row>
   </div>
@@ -22,41 +28,18 @@
 <script>
 import { GetCityPicker } from "@/api/common";
 import { onBeforeMount, reactive } from '@vue/composition-api';
+import { cityPicker } from "@/mixins/cityPicker";
 export default {
   name: "cityPicker",
-  setup(props, { root }) {
-
-    const data = reactive({
-        provinceValue:"",
-        provinceData:[],
-        cityData:[]
-    });
-
-    const getProvince = () => {
-        let requestData = {
-            type:"province"
-        }
-        GetCityPicker(requestData).then(response => {
-            let responseData = response.data.data.data;
-            data.provinceData = responseData;
-        }).catch(error => {
-
-        })
+  props:{
+    cityPickerData:{
+      type:Object,
+      default:() => {}
     }
+  },
+  setup(props, { root,emit }) {
 
-    const handlerProvince = (val) => {
-        let requestData = {
-            type:"city",
-            province_code:val
-        }
-        GetCityPicker(requestData).then(response => {
-            let responseData = response.data.data.data;
-            data.cityData = responseData;
-            console.log(data.cityData)
-        }).catch(error => {
-
-        })
-    }
+    const {data,getProvince,handlerProvince,handlerCity,handlerStreet } = cityPicker();
 
     onBeforeMount(() => {
         getProvince();
@@ -66,7 +49,9 @@ export default {
         // reactive
         data,
         // method
-        handlerProvince
+        handlerProvince,
+        handlerCity,
+        handlerStreet,
     };
   }
 };

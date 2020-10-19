@@ -11,7 +11,7 @@
                 <el-input v-model="form.title" placeholder="请输入手机号"></el-input>
             </el-form-item>
             <el-form-item label="地区:" :label-width="formLabelWidth" prop="content">
-                <CityPicker />
+                <CityPicker :cityPickerData.sync="data.cityPickerData"/>
             </el-form-item>
             <el-form-item label="是否启用:" :label-width="formLabelWidth" prop="content">
                 <el-input v-model="form.title" placeholder="请输入手机号"></el-input>
@@ -52,6 +52,10 @@ export default {
     },
 
     setup(props,{emit,root,refs}){
+
+        const data = reactive({
+            cityPickerData:{}
+        })
 
         const dialog_info_flag = ref(false);
         const submitLoading = ref(false);
@@ -132,6 +136,7 @@ export default {
         }
 
         return {
+            data,
             dialog_info_flag,
             form,
             optionCategory,
