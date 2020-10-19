@@ -18,10 +18,10 @@
                 </div>
             </el-col>
             <el-col :span="2" class="pull-right">
-                <el-button type="danger" size="small">添加用户</el-button>
+                <el-button type="danger" size="small" @click="data.dialog_add = true">添加用户</el-button>
             </el-col>
         </el-row>
-        <!-- <div style="padding-top:20px">
+        <div style="padding-top:20px">
             <TableVue :config.sync="data.configTable">
                 <template v-slot:status="slotData">
                     <el-switch v-model="slotData.myData.name" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
@@ -31,8 +31,9 @@
                     <el-button size="small" type="danger" @click="deleteUserInfo(slotData.myData)">删除</el-button>
                 </template>
             </TableVue>
-        </div> -->
-        <Mixin />
+        </div>
+        <DialogAdd :flag.sync="data.dialog_add"/>
+        <!-- <Mixin /> -->
     </div>
 </template>
 
@@ -40,17 +41,20 @@
 import { reactive, ref } from '@vue/composition-api';
 import SelectVue from "@/components/Select/index";
 import TableVue from "@/components/Table/index";
+import DialogAdd from "./dialog/add";
 import Mixin from "./Mixin";
 export default {
     name:"userIndex",
     components:{
         SelectVue,
         TableVue,
+        DialogAdd,
         Mixin
     },
     setup(props,{root}){
 
         const data = reactive({
+            dialog_add:false,
             configOption:["name","phone"],
             search_key:"",
             search_keyWord:"",
