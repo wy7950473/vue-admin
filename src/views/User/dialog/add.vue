@@ -11,13 +11,16 @@
                 <el-input v-model="form.title" placeholder="请输入手机号"></el-input>
             </el-form-item>
             <el-form-item label="地区:" :label-width="formLabelWidth" prop="content">
-                <CityPicker :cityPickerData.sync="data.cityPickerData"/>
+                <CityPicker :cityPickerLavel="['province','city','area','street']" :cityPickerData.sync="data.cityPickerData" />
             </el-form-item>
             <el-form-item label="是否启用:" :label-width="formLabelWidth" prop="content">
-                <el-input v-model="form.title" placeholder="请输入手机号"></el-input>
+                <el-radio v-model="data.roleStatus" label="1" style="padding-right:30px">禁用</el-radio>
+                <el-radio v-model="data.roleStatus" label="2">启用</el-radio>
             </el-form-item>
              <el-form-item label="角色:" :label-width="formLabelWidth" prop="content">
-                <el-input v-model="form.title" placeholder="请输入手机号"></el-input>
+                <el-checkbox-group v-model="data.roleCode">
+                    <el-checkbox v-for="item in data.roleItem" :key="item.role" :label="item.role">{{ item.name }}</el-checkbox>
+                </el-checkbox-group>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer footer-text">
@@ -28,9 +31,10 @@
 </template>
 
 <script>
-import { ref, reactive, watch, watchEffect } from '@vue/composition-api';
+import { ref, reactive, watch, watchEffect, onBeforeMount } from '@vue/composition-api';
 import { GetList,EditInfo } from "@/api/news";
 import CityPicker from "@/components/CityPicker/index";
+import { GetRole } from "@/api/user";
 export default {
     name:"dialogEditInfo",
     components:{
@@ -54,8 +58,11 @@ export default {
     setup(props,{emit,root,refs}){
 
         const data = reactive({
-            cityPickerData:{}
-        })
+            cityPickerData:{},
+            roleStatus:"1",
+            roleCode:['A','B','C'],
+            roleItem:[]
+        });
 
         const dialog_info_flag = ref(false);
         const submitLoading = ref(false);
@@ -74,6 +81,15 @@ export default {
             // console.log('watch');
         });
 
+        const getRole = () => {
+            GetRole({}).then(response => {
+                let responseData = response.data.data;
+                data.roleItem = responseData;
+            }).catch(error => {
+
+            });
+        }
+
         const close = () => {
             dialog_info_flag.value = false;
             // emit("update:flag",false);
@@ -84,7 +100,8 @@ export default {
 
         const openDialog = () => {
             optionCategory.category = props.category;
-           getInfo();
+            getInfo();
+            getRole();
         }
 
         const getInfo = () => {

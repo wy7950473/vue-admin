@@ -3,7 +3,7 @@ import {  reactive } from '@vue/composition-api';
 
 export function cityPicker() {
 
-    const  data = reactive({
+    const data = reactive({
         provinceValue:"",
         cityValue:"",
         areaValue:"",
@@ -13,64 +13,93 @@ export function cityPicker() {
         areaData:[],
         streetData:[]
     });
+
+    const resultData = reactive({
+        provinceValue:"",
+        cityValue:"",
+        areaValue:"",
+        streetValue:""
+    });
     
     const getProvince = () => {
         let requestData = {
             type:"province"
         }
-        GetCityPicker(requestData).then(response => {
-            let responseData = response.data.data.data;
-            data.provinceData = responseData;
-        }).catch(error => {
-
-        })
+        getData(requestData);
     }
 
     const handlerProvince = (val) => {
+        resetValue({type:"city"});
         let requestData = {
             type:"city",
             province_code:val
         }
-        GetCityPicker(requestData).then(response => {
-            let responseData = response.data.data.data;
-            data.cityData = responseData;
-        }).catch(error => {
-
-        })
+        getData(requestData);
     }
 
     const handlerCity = (val) => {
+        resetValue({type:"area"});
         let requestData = {
           type:"area",
           city_code:val
         }
-        GetCityPicker(requestData).then(response => {
+        getData(requestData);
+    }
+
+    const handlerArea = (val) => {
+        resetValue({type:"street"});
+        let requestData = {
+            type:"street",
+            area_code:val
+        }
+        getData(requestData);
+    }
+
+    const getData = (params) => {
+        GetCityPicker(params).then(response => {
             let responseData = response.data.data.data;
-            data.areaData = responseData;
+            data[`${params.type}Data`] = responseData;
         }).catch(error => {
 
         })
     }
 
     const handlerStreet = (val) => {
-      let requestData = {
-          type:"street",
-          area_code:val
-        }
-        GetCityPicker(requestData).then(response => {
-            let responseData = response.data.data.data;
-            data.streetData = responseData;
-        }).catch(error => {
+        resetValue({type:""});
+    }
 
-        })
+    const resetValue = (params) => {
+
+        const valueJson = {
+            city:["cityValue","areaValue","streetValue"],
+            area:["areaValue","streetValue"],
+            street:["streetValue"]
+        }
+
+        const arrObj = valueJson[params.type];
+
+        if (arrObj) {
+            arrObj.forEach(item => {
+                data[item] = "";
+            });
+        }
+        result();
+    }
+
+    const result = () => {
+        for(let key in resultData){
+            resultData[key] = data[key];
+        }
     }
 
     return {
         // ...toRefs(data),
         data,
+        resultData,
         getProvince,
         handlerProvince,
         handlerCity,
+        handlerArea,
         handlerStreet
     }
 }
