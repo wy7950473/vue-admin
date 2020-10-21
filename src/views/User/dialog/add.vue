@@ -1,40 +1,43 @@
 <template>
-    <el-dialog title="修改" :visible.sync="dialog_info_flag" @close="close" class="from-wrap" width="580px" @open="openDialog">
-        <el-form :model="form" ref="addInfo" label-width="120px">
-            <el-form-item label="用户名:" :label-width="formLabelWidth" prop="category">
-                <el-input v-model="form.title" placeholder="请输入用户名"></el-input>
+    <el-dialog title="修改" :visible.sync="data.dialog_info_flag" @close="close" class="from-wrap" width="580px" @open="openDialog">
+        <el-form :model="data.form" ref="addInfo" label-width="120px">
+            <el-form-item label="用户名:" :label-width="data.formLabelWidth" prop="username">
+                <el-input v-model="data.form.username" placeholder="请输入用户名"></el-input>
             </el-form-item>
-            <el-form-item label="姓名:" :label-width="formLabelWidth" prop="title"> 
-                <el-input v-model="form.title" placeholder="请输入姓名"></el-input>
+            <el-form-item label="密码:" :label-width="data.formLabelWidth" prop="password"> 
+                <el-input v-model="data.form.password" placeholder="请输入密码"></el-input>
             </el-form-item>
-            <el-form-item label="手机号:" :label-width="formLabelWidth" prop="content">
-                <el-input v-model="form.title" placeholder="请输入手机号"></el-input>
+            <el-form-item label="姓名:" :label-width="data.formLabelWidth" prop="truename"> 
+                <el-input v-model="data.form.truename" placeholder="请输入姓名"></el-input>
             </el-form-item>
-            <el-form-item label="地区:" :label-width="formLabelWidth" prop="content">
+            <el-form-item label="手机号:" :label-width="data.formLabelWidth" prop="phone">
+                <el-input v-model="data.form.phone" placeholder="请输入手机号"></el-input>
+            </el-form-item>
+            <el-form-item label="地区:" :label-width="data.formLabelWidth" prop="region">
                 <CityPicker :cityPickerLavel="['province','city','area','street']" :cityPickerData.sync="data.cityPickerData" />
             </el-form-item>
-            <el-form-item label="是否启用:" :label-width="formLabelWidth" prop="content">
-                <el-radio v-model="data.roleStatus" label="1" style="padding-right:30px">禁用</el-radio>
-                <el-radio v-model="data.roleStatus" label="2">启用</el-radio>
+            <el-form-item label="是否启用:" :label-width="data.formLabelWidth" prop="status">
+                <el-radio v-model="data.form.status" label="1" style="padding-right:30px">禁用</el-radio>
+                <el-radio v-model="data.form.status" label="2">启用</el-radio>
             </el-form-item>
-             <el-form-item label="角色:" :label-width="formLabelWidth" prop="content">
-                <el-checkbox-group v-model="data.roleCode">
+             <el-form-item label="角色:" :label-width="data.formLabelWidth" prop="role">
+                <el-checkbox-group v-model="data.form.role">
                     <el-checkbox v-for="item in data.roleItem" :key="item.role" :label="item.role">{{ item.name }}</el-checkbox>
                 </el-checkbox-group>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer footer-text">
             <el-button @click="close">取 消</el-button>
-            <el-button type="danger" @click="submit" :loading="submitLoading">确 定</el-button>
+            <el-button type="danger" @click="submit" :loading="data.submitLoading">确 定</el-button>
         </div>
     </el-dialog>
 </template>
 
 <script>
+import sha1 from "js-sha1";
 import { ref, reactive, watch, watchEffect, onBeforeMount } from '@vue/composition-api';
-import { GetList,EditInfo } from "@/api/news";
 import CityPicker from "@/components/CityPicker/index";
-import { GetRole } from "@/api/user";
+import { GetRole,AddUser } from "@/api/user";
 export default {
     name:"dialogEditInfo",
     components:{
@@ -61,24 +64,23 @@ export default {
             cityPickerData:{},
             roleStatus:"1",
             roleCode:['A','B','C'],
-            roleItem:[]
+            roleItem:[],
+            submitLoading:false,
+            formLabelWidth:"100px",
+            dialog_info_flag:false,
+            form:{
+                username:"",
+                truename:"",
+                password:"",
+                phone:"",
+                region:"",
+                status:"2",
+                role:[]
+            }
         });
-
-        const dialog_info_flag = ref(false);
-        const submitLoading = ref(false);
-        const form = reactive({
-            category: '',
-            title: '',
-            content: ''
-        });
-        const optionCategory = reactive({
-            category:[]
-        })
-        const formLabelWidth = ref('100px');
 
         watchEffect(() =>{
-            dialog_info_flag.value = props.flag;
-            // console.log('watch');
+            data.dialog_info_flag = props.flag;
         });
 
         const getRole = () => {
@@ -99,66 +101,57 @@ export default {
         }
 
         const openDialog = () => {
-            optionCategory.category = props.category;
-            getInfo();
+            // optionCategory.category = props.category;
             getRole();
         }
 
-        const getInfo = () => {
-            let requestData = {
-                pageNumber:1,
-                pageSize:1,
-                id:props.id
-            }
-            GetList(requestData).then(response => {
-                let data = response.data.data.data[0];
-                form.category = data.categoryId,
-                form.title = data.title,
-                form.content = data.content;        
-            }).catch(error => {
-
-            })
-        }
-
         const submit = () => {
-            let requestData = {
-                id:props.id,
-                categoryId:form.category,
-                title:form.title,
-                content:form.content
-            };
-            submitLoading.value = true;
-            EditInfo(requestData).then(response => {
-                let data = response.data;
-                if (data.resCode === 0){
-                    root.$message({
-                        message:data.message,
-                        type:'success'
-                    });
-                    submitLoading.value = false;
-                    // reset form 
-                    // root.$refs['addInfo'].resetFields();
-                    resetForm();
-                    emit('getList');
-                    emit('close',false);
-                }
+            if (!data.form.username){
+                root.$message({
+                    message:"用户名不能为空!",
+                    type:"error"
+                });
+                return false;
+            }
+            if (!data.form.password){
+                root.$message({
+                    message:"密码不能为空!",
+                    type:"error"
+                });
+                return false;
+            }
+            if(data.form.role.length === 0){
+                root.$message({
+                    message:"请选择角色",
+                    type:"error"
+                });
+                return false;
+            }
+            let requestData = JSON.parse(JSON.stringify(data.form));
+            requestData.password = sha1(requestData.password);
+            // join : array to string
+            requestData.role = requestData.role.join();
+            requestData.region = JSON.stringify(data.cityPickerData);
+            AddUser(requestData).then(response => {
+                let responseData = response.data;
+                root.$message({
+                    message:responseData.message,
+                    type:"success"
+                });
+                resetForm();
             }).catch(error => {
-                submitLoading.value = false;
+
             });
         }
 
         const resetForm = () => {
-            getInfo();
-            // refs.addInfo.resetFields();
+            // getInfo();
+            data.cityPickerData = {};
+            refs.addInfo.resetFields();
         }
 
         return {
             data,
-            dialog_info_flag,
-            form,
-            optionCategory,
-            submitLoading,
-            formLabelWidth,
             close,
             openDialog,
             submit

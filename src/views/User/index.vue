@@ -22,13 +22,21 @@
             </el-col>
         </el-row>
         <div style="padding-top:20px">
-            <TableVue :config.sync="data.configTable">
+            <TableVue :config.sync="data.configTable" :tableRow.sync="data.tableRow">
                 <template v-slot:status="slotData">
-                    <el-switch v-model="slotData.myData.name" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+                    <el-switch v-model="slotData.myData.status" 
+                        active-value="2" 
+                        inactive-value="1" 
+                        active-color="#13ce66" 
+                        inactive-color="#ff4949">
+                    </el-switch>
                 </template>
                 <template v-slot:operation="slotData">
                     <el-button size="small" type="success" @click="edit(slotData.myData)">编辑</el-button>
                     <el-button size="small" type="danger" @click="deleteUserInfo(slotData.myData)">删除</el-button>
+                </template>
+                <template v-slot:tableFooterLeft>
+                    <el-button size="small" type="danger" @click="batchDel">批量删除</el-button>
                 </template>
             </TableVue>
         </div>
@@ -43,6 +51,7 @@ import SelectVue from "@/components/Select/index";
 import TableVue from "@/components/Table/index";
 import DialogAdd from "./dialog/add";
 import Mixin from "./Mixin";
+import { DeleteUser } from "@/api/user";
 export default {
     name:"userIndex",
     components:{
@@ -58,16 +67,17 @@ export default {
             configOption:["name","phone"],
             search_key:"",
             search_keyWord:"",
+            tableRow:{},
             configTable:{
                 // selection
                 selection:true,
                 // table header
                 recordCheckbox:true,
                 tHead:[
-                    { label:"邮箱/用户名称",field:"email",width:150},
-                    { label:"真实姓名",field:"name",width:100},
+                    { label:"邮箱/用户名称",field:"username",width:150},
+                    { label:"真实姓名",field:"truename",width:100},
                     { label:"手机号",field:"phone",width:150},
-                    { label:"地区",field:"address",width:300},
+                    { label:"地区",field:"region",width:300},
                     { label:"角色",field:"role"},
                     { label:"禁启用状态",field:"status",columnType:"slot",slotName:"status"},
                     { label:"操作",columnType:"slot",slotName:"operation"}
@@ -85,7 +95,9 @@ export default {
                     layout:"total, sizes, prev, pager, next, jumper"
                 }
             }
-        })
+            
+        });
+
 
         const search = () => {
             // console.log(`+++++++++++${data.search_key}`);
@@ -99,13 +111,41 @@ export default {
             console.log(data);
         }
 
+        const batchDel = () => {
+            let userId = data.tableRow.idItem;
+            console.log(userId);
+            if(!userId || userId.length == 0){
+                root.$message({
+                    message:"请选择要删除的用户!",
+                    type:"error"
+                });
+                return false;
+            }
+            root.confirm({
+                content: "确认删除当前信息，确认后将无法恢复!",
+                tip: "警告",
+                fn: userDelete,
+                id: ''
+            });
+            
+        }
+
+        const userDelete = () => {
+            DeleteUser({id:userId}).then(response => {
+                console.log(response);
+            }).catch(error => {
+
+            });
+        }
+
         return {
             // reactive
             data,
             // method
             search,
             edit,
-            deleteUserInfo
+            deleteUserInfo,
+            batchDel
         }
     }
 }

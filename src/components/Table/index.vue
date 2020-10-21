@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-table :data="data.tableData" style="width: 100%"  border>
+        <el-table :data="data.tableData" style="width: 100%"  border @selection-change="thatSelectCheckbox">
             <el-table-column v-if="data.tableConfig.selection" type="selection" width="40"></el-table-column>
             <template v-for="item in data.tableConfig.tHead" >
                 <el-table-column :key="item.field" :prop="item.field" 
@@ -17,17 +17,27 @@
                     v-else/>
             </template>
         </el-table>
-        <el-pagination
-            v-if="data.tableConfig.pagination.show"
-            background
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="pageData.currentPage"
-            :page-sizes="pageData.pageSizes"
-            :page-size="pageData.pageSize"
-            :layout="data.tableConfig.pagination.layout"
-            :total="pageData.total">
-        </el-pagination>
+        <div class="table-footer">
+            <el-row>
+                <el-col :span="4">
+                    <slot name="tableFooterLeft"></slot>
+                </el-col>
+                <el-col :span="20">
+                    <el-pagination
+                        class="pull-right"
+                        v-if="data.tableConfig.pagination.show"
+                        background
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="pageData.currentPage"
+                        :page-sizes="pageData.pageSizes"
+                        :page-size="pageData.pageSize"
+                        :layout="data.tableConfig.pagination.layout"
+                        :total="pageData.total">
+                    </el-pagination>
+                </el-col>
+            </el-row>
+        </div>
     </div>
 </template>
 
@@ -44,6 +54,10 @@ export default {
         config:{
             type:Object,
             default:() => {}
+        },
+        tableRow:{
+            type:Object,
+            default:() => {}
         }
     },
     data(){
@@ -51,7 +65,7 @@ export default {
 
         }
     },
-    setup(props,{root}){
+    setup(props,{root,emit}){
 
         const { tableData,loadThisData } = tableLoadData();
 
@@ -85,7 +99,14 @@ export default {
                 requestData.data.pageSize = pageSize;
                 loadThisData(data.tableConfig.requestData);
             }
-        })
+        });
+
+        const thatSelectCheckbox = (val) => {
+            let rowData = {
+                idItem:val.map(item => item.id)
+            }
+            emit("update:tableRow",rowData);
+        }
 
         const initTableConfig = () => {
             let configData = props.config;
@@ -106,12 +127,15 @@ export default {
             data,
             pageData,
             handleSizeChange,
-            handleCurrentChange
+            handleCurrentChange,
+            thatSelectCheckbox
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
-
+.table-footer{
+    padding: 15px 0;
+}
 </style>
