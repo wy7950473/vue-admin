@@ -5,13 +5,13 @@
                 <el-input v-model="data.form.username" placeholder="请输入用户名"></el-input>
             </el-form-item>
             <el-form-item label="密码:" :label-width="data.formLabelWidth" prop="password"> 
-                <el-input v-model="data.form.password" placeholder="请输入密码"></el-input>
+                <el-input type="password" v-model="data.form.password" placeholder="请输入密码"></el-input>
             </el-form-item>
             <el-form-item label="姓名:" :label-width="data.formLabelWidth" prop="truename"> 
                 <el-input v-model="data.form.truename" placeholder="请输入姓名"></el-input>
             </el-form-item>
             <el-form-item label="手机号:" :label-width="data.formLabelWidth" prop="phone">
-                <el-input v-model="data.form.phone" placeholder="请输入手机号"></el-input>
+                <el-input type="number" v-model="data.form.phone" placeholder="请输入手机号"></el-input>
             </el-form-item>
             <el-form-item label="地区:" :label-width="data.formLabelWidth" prop="region">
                 <CityPicker :cityPickerLavel="['province','city','area','street']" :cityPickerData.sync="data.cityPickerData" />
@@ -93,9 +93,9 @@ export default {
         }
 
         const close = () => {
-            dialog_info_flag.value = false;
-            // emit("update:flag",false);
-            emit('close',false);
+            data.dialog_info_flag = false;
+            emit("update:flag",false);
+            // emit('update:flag',false);
             // The decorator(修饰器) cannot be used when the callback requires logical(逻辑) processing(处理) 
             resetForm();
         }
@@ -139,6 +139,7 @@ export default {
                     type:"success"
                 });
                 resetForm();
+                emit("update:flag",false);
             }).catch(error => {
 
             });

@@ -93,7 +93,6 @@ export default {
 
         watch(() => [pageData.currentPage,pageData.pageSize],([currentPage,pageSize]) => {
             let requestData = data.tableConfig.requestData;
-            console.log(requestData);
             if (requestData.data){
                 requestData.data.pageNumber = currentPage;
                 requestData.data.pageSize = pageSize;
@@ -106,6 +105,10 @@ export default {
                 idItem:val.map(item => item.id)
             }
             emit("update:tableRow",rowData);
+        }
+
+        const refreshData = () => {
+            loadThisData(data.tableConfig.requestData);
         }
 
         const initTableConfig = () => {
@@ -128,7 +131,8 @@ export default {
             pageData,
             handleSizeChange,
             handleCurrentChange,
-            thatSelectCheckbox
+            thatSelectCheckbox,
+            refreshData
         }
     }
 }

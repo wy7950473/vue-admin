@@ -22,7 +22,7 @@
             </el-col>
         </el-row>
         <div style="padding-top:20px">
-            <TableVue :config.sync="data.configTable" :tableRow.sync="data.tableRow">
+            <TableVue ref="userTable" :config.sync="data.configTable" :tableRow.sync="data.tableRow">
                 <template v-slot:status="slotData">
                     <el-switch v-model="slotData.myData.status" 
                         active-value="2" 
@@ -60,7 +60,7 @@ export default {
         DialogAdd,
         Mixin
     },
-    setup(props,{root}){
+    setup(props,{root,refs}){
 
         const data = reactive({
             dialog_add:false,
@@ -107,13 +107,8 @@ export default {
             console.log(data);
         }
 
-        const deleteUserInfo = (data) => {
-            console.log(data);
-        }
-
         const batchDel = () => {
             let userId = data.tableRow.idItem;
-            console.log(userId);
             if(!userId || userId.length == 0){
                 root.$message({
                     message:"请选择要删除的用户!",
@@ -125,14 +120,31 @@ export default {
                 content: "确认删除当前信息，确认后将无法恢复!",
                 tip: "警告",
                 fn: userDelete,
-                id: ''
+                id: userId
             });
-            
         }
 
-        const userDelete = () => {
-            DeleteUser({id:userId}).then(response => {
-                console.log(response);
+        const deleteUserInfo = (params) => {
+            data.tableRow.idItem = [params.id];
+            root.confirm({
+                content: "确认删除当前信息，确认后将无法恢复!",
+                tip: "警告",
+                fn: userDelete,
+                id: data.tableRow.idItem
+            });
+        }
+
+        const userDelete = (params) => {
+
+            DeleteUser({id:params}).then(response => {
+                let responseData = response.data;
+                if(responseData.resCode == 0){
+                    root.$message({
+                        message:responseData.message ,
+                        type:"success"
+                    });
+                    refs.userTable.refreshData();
+                }
             }).catch(error => {
 
             });
