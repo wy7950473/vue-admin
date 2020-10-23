@@ -38,6 +38,7 @@ import sha1 from "js-sha1";
 import { ref, reactive, watch, watchEffect, onBeforeMount } from '@vue/composition-api';
 import CityPicker from "@/components/CityPicker/index";
 import { GetRole,AddUser } from "@/api/user";
+import EventBus from "@/utils/bus";
 export default {
     name:"dialogEditInfo",
     components:{
@@ -58,7 +59,7 @@ export default {
         }
     },
 
-    setup(props,{emit,root,refs}){
+    setup(props,{emit,root,refs,parent}){
 
         const data = reactive({
             cityPickerData:{},
@@ -77,6 +78,10 @@ export default {
                 status:"2",
                 role:[]
             }
+        });
+
+        EventBus.$on('showFun',(data) => {
+            console.log(data);
         });
 
         watchEffect(() =>{
@@ -139,6 +144,7 @@ export default {
                     type:"success"
                 });
                 resetForm();
+                parent.refreshTableData();
                 emit("update:flag",false);
             }).catch(error => {
 

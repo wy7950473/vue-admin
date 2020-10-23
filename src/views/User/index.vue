@@ -42,6 +42,7 @@
         </div>
         <DialogAdd :flag.sync="data.dialog_add"/>
         <!-- <Mixin /> -->
+        <el-button @click="show">触发</el-button>
     </div>
 </template>
 
@@ -52,6 +53,7 @@ import TableVue from "@/components/Table/index";
 import DialogAdd from "./dialog/add";
 import Mixin from "./Mixin";
 import { DeleteUser } from "@/api/user";
+import EventBus from "@/utils/bus";
 export default {
     name:"userIndex",
     components:{
@@ -98,9 +100,12 @@ export default {
             
         });
 
+        const show = () => {
+            EventBus.$emit('showFun',{aa:222});
+        }
 
         const search = () => {
-            // console.log(`+++++++++++${data.search_key}`);
+            
         }
 
         const edit = (data) => {
@@ -143,11 +148,15 @@ export default {
                         message:responseData.message ,
                         type:"success"
                     });
-                    refs.userTable.refreshData();
+                    refreshTableData();
                 }
             }).catch(error => {
 
             });
+        }
+
+        const refreshTableData = () => {
+            refs.userTable.refreshData();
         }
 
         return {
@@ -157,7 +166,9 @@ export default {
             search,
             edit,
             deleteUserInfo,
-            batchDel
+            batchDel,
+            refreshTableData,
+            show
         }
     }
 }

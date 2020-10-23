@@ -20,10 +20,12 @@ export function tableLoadData() {
         loadTableData(requestData).then(response => {
             let responseData = response.data.data.data;
             // console.log(responseData);
-            if (responseData && responseData.length){
-                tableData.item = responseData;
-                tableData.total = response.data.data.total;
-            }
+            tableData.item = responseData;
+            tableData.total = responseData.length === 0 ? 0 : response.data.data.total;
+            // if (responseData && responseData.length){
+            //     tableData.item = responseData;
+            //     tableData.total = response.data.data.total;
+            // }
         }).catch(error => {
 
         });
