@@ -1,8 +1,8 @@
 <template>
     <el-dialog title="修改" :visible.sync="data.dialog_info_flag" @close="close" class="from-wrap" width="580px" @open="openDialog">
-        <el-form :model="data.form" ref="addInfo" label-width="120px">
+        <el-form :model="data.form" status-icon ref="addInfo" :rules="data.rules" label-width="120px">
             <el-form-item label="用户名:" :label-width="data.formLabelWidth" prop="username">
-                <el-input v-model="data.form.username" placeholder="请输入用户名"></el-input>
+                <el-input v-model="data.form.username" autocomplete="off" placeholder="请输入用户名"></el-input>
             </el-form-item>
             <el-form-item label="密码:" :label-width="data.formLabelWidth" prop="password"> 
                 <el-input type="password" v-model="data.form.password" placeholder="请输入密码"></el-input>
@@ -28,7 +28,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer footer-text">
             <el-button @click="close">取 消</el-button>
-            <el-button type="danger" @click="submit" :loading="data.submitLoading">确 定</el-button>
+            <el-button type="danger" @click="submit('addInfo')" :loading="data.submitLoading">确 定</el-button>
         </div>
     </el-dialog>
 </template>
@@ -38,7 +38,12 @@ import sha1 from "js-sha1";
 import { ref, reactive, watch, watchEffect, onBeforeMount } from '@vue/composition-api';
 import CityPicker from "@/components/CityPicker/index";
 import { GetRole,AddUser } from "@/api/user";
-import EventBus from "@/utils/bus";
+import {
+  stripscript,
+  validateEmail,
+  validPassword,
+  validCode
+} from "@/utils/validate";
 export default {
     name:"dialogEditInfo",
     components:{
@@ -61,6 +66,33 @@ export default {
 
     setup(props,{emit,root,refs,parent}){
 
+        // verify username
+        const validateUsername = (rule, value, callback) => {
+            console.log(111);
+            if (value === "") {
+                callback(new Error("please input username"));
+            } else if (validateEmail(value)) {
+                callback(new Error("username format error"));
+            } else {
+                callback();
+            }
+        };
+        // verify password
+        const validatePassword = (rule, value, callback) => {
+            // filtered data
+            data.form.password = stripscript(value);
+            value = data.form.password;
+            if (value === "") {
+                callback(new Error("please input password"));
+            } else if (validPassword(value)) {
+                callback(
+                    new Error("The password is 6 to 20 digits numbers plus letters")
+                );
+            } else {
+                callback();
+            }
+        };
+
         const data = reactive({
             cityPickerData:{},
             roleStatus:"1",
@@ -77,11 +109,11 @@ export default {
                 region:"",
                 status:"2",
                 role:[]
+            },
+            rules:{
+                username: [{ validator: validateUsername, trigger: "blur" }],
+                password: [{ validator: validatePassword, trigger: "blur" }]
             }
-        });
-
-        EventBus.$on('showFun',(data) => {
-            console.log(data);
         });
 
         watchEffect(() =>{
@@ -110,7 +142,16 @@ export default {
             getRole();
         }
 
-        const submit = () => {
+        const submit = (formName) => {
+            refs[formName].validate(valid => {
+                console.log(222)
+                if (valid) {
+                    
+                } else {
+                    console.log("error submit!!");
+                    return false;
+                }
+            });
             if (!data.form.username){
                 root.$message({
                     message:"用户名不能为空!",

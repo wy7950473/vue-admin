@@ -42,18 +42,16 @@
         </div>
         <DialogAdd :flag.sync="data.dialog_add"/>
         <!-- <Mixin /> -->
-        <el-button @click="show">触发</el-button>
     </div>
 </template>
 
 <script>
-import { reactive, ref } from '@vue/composition-api';
+import { provide, reactive, ref } from '@vue/composition-api';
 import SelectVue from "@/components/Select/index";
 import TableVue from "@/components/Table/index";
 import DialogAdd from "./dialog/add";
 import Mixin from "./Mixin";
 import { DeleteUser } from "@/api/user";
-import EventBus from "@/utils/bus";
 export default {
     name:"userIndex",
     components:{
@@ -99,10 +97,6 @@ export default {
             }
             
         });
-
-        const show = () => {
-            EventBus.$emit('showFun',{aa:222});
-        }
 
         const search = () => {
             
@@ -167,8 +161,7 @@ export default {
             edit,
             deleteUserInfo,
             batchDel,
-            refreshTableData,
-            show
+            refreshTableData
         }
     }
 }

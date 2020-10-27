@@ -1,11 +1,18 @@
 import { getCategoryInfo } from "@/api/news";
 
 const state = {
-    qiniuUrl:"http://qhxed3to4.hn-bkt.clouddn.com/"
+    qiniuUrl:"http://qhxed3to4.hn-bkt.clouddn.com/",
+    aaa:"Test"
 }
 
 const getters = {
     qiniuUrl: state => state.qiniuUrl
+}
+
+const mutations = {
+    AAAAA(state,value){
+        state.aaa = value;
+    }
 }
 
 const actions = {
@@ -24,5 +31,6 @@ export default {
     namespaced:true,
     state,
     getters,
+    mutations,
     actions
 }
