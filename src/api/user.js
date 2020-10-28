@@ -23,3 +23,11 @@ export function DeleteUser(data){
         data
     });
 }
+
+export function UserActive(data){
+    return service.request({
+        method:"post",
+        url:"/user/actives/",
+        data
+    });
+}

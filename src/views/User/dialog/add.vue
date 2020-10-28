@@ -61,6 +61,10 @@ export default {
         id:{
             type:String,
             default:''
+        },
+        editData:{
+            type:Object,
+            default:() => {}
         }
     },
 
@@ -79,9 +83,11 @@ export default {
         };
         // verify password
         const validatePassword = (rule, value, callback) => {
-            // filtered data
-            data.form.password = stripscript(value);
-            value = data.form.password;
+            if (value){
+                // filtered data
+                data.form.password = stripscript(value);
+                value = data.form.password;
+            }
             if (value === "") {
                 callback(new Error("please input password"));
             } else if (validPassword(value)) {
@@ -112,7 +118,8 @@ export default {
             },
             rules:{
                 username: [{ validator: validateUsername, trigger: "blur" }],
-                password: [{ validator: validatePassword, trigger: "blur" }]
+                password: [{ validator: validatePassword, trigger: "blur" }],
+                role: [{ required:true, message:"please select role", trigger: "change" }]
             }
         });
 
@@ -131,64 +138,54 @@ export default {
 
         const close = () => {
             data.dialog_info_flag = false;
-            emit("update:flag",false);
             // emit('update:flag',false);
             // The decorator(修饰器) cannot be used when the callback requires logical(逻辑) processing(处理) 
             resetForm();
+            emit("update:flag",false);
         }
 
         const openDialog = () => {
             // optionCategory.category = props.category;
             getRole();
+            const editData = props.editData;
+            console.log(editData);
+            return false;
+            // console.log("--" + editData.id);
+            if (editData.id) {
+                editData.role = editData.role.split(',');
+            } else {
+                data.form.id && delete data.form.id;
+            }
+            for (let key in editData) {
+                data.form[key] = editData.id ? editData[key] : "";
+            }
+            
         }
 
         const submit = (formName) => {
             refs[formName].validate(valid => {
                 console.log(222)
                 if (valid) {
-                    
+                    let requestData = JSON.parse(JSON.stringify(data.form));
+                    requestData.password = sha1(requestData.password);
+                    // join : array to string
+                    requestData.role = requestData.role.join();
+                    requestData.region = JSON.stringify(data.cityPickerData);
+                    AddUser(requestData).then(response => {
+                        let responseData = response.data;
+                        root.$message({
+                            message:responseData.message,
+                            type:"success"
+                        });
+                        close();
+                        parent.refreshTableData();
+                    }).catch(error => {
+
+                    });
                 } else {
                     console.log("error submit!!");
                     return false;
                 }
-            });
-            if (!data.form.username){
-                root.$message({
-                    message:"用户名不能为空!",
-                    type:"error"
-                });
-                return false;
-            }
-            if (!data.form.password){
-                root.$message({
-                    message:"密码不能为空!",
-                    type:"error"
-                });
-                return false;
-            }
-            if(data.form.role.length === 0){
-                root.$message({
-                    message:"请选择角色",
-                    type:"error"
-                });
-                return false;
-            }
-            let requestData = JSON.parse(JSON.stringify(data.form));
-            requestData.password = sha1(requestData.password);
-            // join : array to string
-            requestData.role = requestData.role.join();
-            requestData.region = JSON.stringify(data.cityPickerData);
-            AddUser(requestData).then(response => {
-                let responseData = response.data;
-                root.$message({
-                    message:responseData.message,
-                    type:"success"
-                });
-                resetForm();
-                parent.refreshTableData();
-                emit("update:flag",false);
-            }).catch(error => {
-
             });
         }
 

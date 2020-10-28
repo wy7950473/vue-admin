@@ -60,11 +60,6 @@ export default {
             default:() => {}
         }
     },
-    data(){
-        return {
-
-        }
-    },
     setup(props,{root,emit}){
 
         const { tableData,loadThisData } = tableLoadData();

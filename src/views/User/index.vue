@@ -24,7 +24,8 @@
         <div style="padding-top:20px">
             <TableVue ref="userTable" :config.sync="data.configTable" :tableRow.sync="data.tableRow">
                 <template v-slot:status="slotData">
-                    <el-switch v-model="slotData.myData.status" 
+                    <el-switch v-model="slotData.myData.status"
+                        @change="handlerSwitch(slotData.myData)"
                         active-value="2" 
                         inactive-value="1" 
                         active-color="#13ce66" 
@@ -40,7 +41,7 @@
                 </template>
             </TableVue>
         </div>
-        <DialogAdd :flag.sync="data.dialog_add"/>
+        <DialogAdd :flag.sync="data.dialog_add" :editData="data.editData"/>
         <!-- <Mixin /> -->
     </div>
 </template>
@@ -51,7 +52,7 @@ import SelectVue from "@/components/Select/index";
 import TableVue from "@/components/Table/index";
 import DialogAdd from "./dialog/add";
 import Mixin from "./Mixin";
-import { DeleteUser } from "@/api/user";
+import { DeleteUser,UserActive } from "@/api/user";
 export default {
     name:"userIndex",
     components:{
@@ -68,6 +69,8 @@ export default {
             search_key:"",
             search_keyWord:"",
             tableRow:{},
+            editData:{},
+            updateUserStatusFlag:false,
             configTable:{
                 // selection
                 selection:true,
@@ -102,8 +105,9 @@ export default {
             
         }
 
-        const edit = (data) => {
-            console.log(data);
+        const edit = (params) => {
+            data.dialog_add = true;
+            data.editData = Object.assign({},params);
         }
 
         const batchDel = () => {
@@ -133,8 +137,31 @@ export default {
             });
         }
 
-        const userDelete = (params) => {
+        const handlerSwitch = (val) => {
+            if (data.updateUserStatusFlag){
+                return false;
+            }
+            data.updateUserStatusFlag = true;
+            let requestData = {
+                id:val.id,
+                status:val.status
+            }
+            UserActive(requestData).then(response => {
+                let responseData = response.data;
+                if(responseData.resCode == 0){
+                    root.$message({
+                        message:responseData.message ,
+                        type:"success"
+                    });
+                    refreshTableData();
+                    data.updateUserStatusFlag = !data.updateUserStatusFlag;
+                }
+            }).catch(error => {
+                data.updateUserStatusFlag = !data.updateUserStatusFlag;
+            });
+        }
 
+        const userDelete = (params) => {
             DeleteUser({id:params}).then(response => {
                 let responseData = response.data;
                 if(responseData.resCode == 0){
@@ -161,7 +188,8 @@ export default {
             edit,
             deleteUserInfo,
             batchDel,
-            refreshTableData
+            refreshTableData,
+            handlerSwitch
         }
     }
 }
