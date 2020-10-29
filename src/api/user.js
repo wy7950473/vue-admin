@@ -31,3 +31,11 @@ export function UserActive(data){
         data
     });
 }
+
+export function UserEdit(data){
+    return service.request({
+        method:"post",
+        url:"/user/edit/",
+        data
+    });
+}

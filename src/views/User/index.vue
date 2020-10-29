@@ -6,7 +6,7 @@
                     <label for>关键字:</label>
                     <div class="wrap-content">
                          <el-col :span="3" style="padding-right:15px">
-                            <SelectVue :config="data.configOption" :search_key.sync="data.search_key"/>
+                            <SelectVue :config="data.configOption" :search_key.sync="data.search_key" :selectData.sync="data.selectData"/>
                         </el-col>
                         <el-col :span="4" style="padding-right:15px">
                             <el-input v-model="data.search_keyWord" placeholder="请输入搜索的关键字"></el-input>
@@ -18,7 +18,7 @@
                 </div>
             </el-col>
             <el-col :span="2" class="pull-right">
-                <el-button type="danger" size="small" @click="data.dialog_add = true">添加用户</el-button>
+                <el-button type="danger" size="small" @click="addUser">添加用户</el-button>
             </el-col>
         </el-row>
         <div style="padding-top:20px">
@@ -41,7 +41,7 @@
                 </template>
             </TableVue>
         </div>
-        <DialogAdd :flag.sync="data.dialog_add" :editData="data.editData"/>
+        <DialogAdd :flag.sync="data.dialog_add" :operationType="data.operationType" :editData="data.editData"/>
         <!-- <Mixin /> -->
     </div>
 </template>
@@ -70,7 +70,9 @@ export default {
             search_keyWord:"",
             tableRow:{},
             editData:{},
+            selectData:{},
             updateUserStatusFlag:false,
+            operationType:"",
             configTable:{
                 // selection
                 selection:true,
@@ -102,12 +104,21 @@ export default {
         });
 
         const search = () => {
-            
+            let requestData = {
+                [data.selectData.value]:data.search_keyWord
+            }
+            refs.userTable.paramsLoadData(requestData);
         }
 
         const edit = (params) => {
             data.dialog_add = true;
             data.editData = Object.assign({},params);
+            data.operationType = "edit";
+        }
+
+        const addUser = () => {
+            data.dialog_add = true
+            data.operationType = "add";
         }
 
         const batchDel = () => {
@@ -186,6 +197,7 @@ export default {
             // method
             search,
             edit,
+            addUser,
             deleteUserInfo,
             batchDel,
             refreshTableData,

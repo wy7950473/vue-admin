@@ -1,5 +1,5 @@
 <template>
-    <el-select v-model="data.selectValue">
+    <el-select v-model="data.selectValue" @change="select">
        <el-option
             v-for="item in data.initOptionValue"
             :key="item.value"
@@ -21,6 +21,10 @@ export default {
         search_key:{
             type:String,
             default:""
+        },
+        selectData:{
+            type:Object,
+            default:() => {}
         }
     },
     setup(props,{root,emit}){
@@ -59,13 +63,20 @@ export default {
             data.selectValue = optionArr[0].value;
         }
 
+        const select = (val) => {
+            let filterData = data.option.filter(item => item.value == val);
+            emit("update:selectData",filterData[0])
+        }
+
         onMounted(() => {
             initOption();
         })
 
         return {
             // reactive
-            data
+            data,
+            // method
+            select
         }
     }
 }

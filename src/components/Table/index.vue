@@ -106,6 +106,15 @@ export default {
             loadThisData(data.tableConfig.requestData);
         }
 
+        const paramsLoadData = (params) => {
+            let requestData = Object.assign({},params,{
+                pageNumber:1,
+                pageSize:10
+            });
+            data.tableConfig.requestData.data = requestData;
+            loadThisData(data.tableConfig.requestData.data);
+        }
+
         const initTableConfig = () => {
             let configData = props.config;
             let keys = Object.keys(data.tableConfig);
@@ -127,7 +136,8 @@ export default {
             handleSizeChange,
             handleCurrentChange,
             thatSelectCheckbox,
-            refreshData
+            refreshData,
+            paramsLoadData
         }
     }
 }
