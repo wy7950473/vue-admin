@@ -117,7 +117,7 @@ import {
   onBeforeMount
 } from "@vue/composition-api";
 import CityPicker from "@/components/CityPicker/index";
-import { GetRole, AddUser, UserEdit } from "@/api/user";
+import { GetRole,GetSystem, AddUser, UserEdit } from "@/api/user";
 import {
   stripscript,
   validateEmail,
@@ -215,7 +215,7 @@ export default {
     });
 
     const getRole = () => {
-      GetRole({})
+      GetSystem({})
         .then(response => {
           let responseData = response.data.data;
           data.roleItem = responseData;

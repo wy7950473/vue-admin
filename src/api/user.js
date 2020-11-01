@@ -39,3 +39,19 @@ export function UserEdit(data){
         data
     });
 }
+
+export function GetSystem(data){
+    return service.request({
+        method:"post",
+        url:"/system/",
+        data
+    });
+}
+
+export function getUserRoles(data = {}){
+    return service.request({
+        method:"post",
+        url:"/userRole/",
+        data
+    });
+}

@@ -112,7 +112,7 @@ export default {
                 pageSize:10
             });
             data.tableConfig.requestData.data = requestData;
-            loadThisData(data.tableConfig.requestData.data);
+            loadThisData(data.tableConfig.requestData);
         }
 
         const initTableConfig = () => {

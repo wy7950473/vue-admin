@@ -4,7 +4,7 @@ import { getToken,getUsername } from "@/utils/app";
 
 // create axios,assignment variable service
 // Front end to API address: http://www.web-jshtml.cn/productApi
-const BASEURL = process.env.NODE_ENV === 'production' ? '/api' : '/api';
+const BASEURL = process.env.NODE_ENV === 'production' ? '' : '/api';
 
 const service = axios.create({
     baseURL: BASEURL,

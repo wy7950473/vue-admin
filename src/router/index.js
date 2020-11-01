@@ -4,7 +4,7 @@ import Login from "../views/Login/login";
 
 Vue.use(VueRouter);
 
-const routes = [
+export const defaultRouterMap = [
   {
     path: "/",
     redirect: "index",
@@ -60,12 +60,16 @@ const routes = [
         component: () => import("../views/Console/index")
       }
     ]
-  },
+  }
+];
+
+export const asyncRouterMap = [
   {
     path:"/info",
     name:"Info",
     component: () => import("../views/Layout/index"),
     meta:{
+      system:"infoSystem",
       name:"信息管理",
       icon:"info"
     },
@@ -101,6 +105,7 @@ const routes = [
     path:"/user",
     name:"User",
     meta:{
+      system:"userSystem",
       name:"用户管理",
       icon:"user"
     },
@@ -118,8 +123,10 @@ const routes = [
   }
 ];
 
+
 const router = new VueRouter({
-  routes
+  routes:defaultRouterMap
+  
 });
 
 export default router;
