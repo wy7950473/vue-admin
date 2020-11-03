@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { onMounted, reactive, ref } from "@vue/composition-api";
+import { onMounted, reactive, ref, onActivated, onDeactivated } from "@vue/composition-api";
 import { GetList, EditInfo } from "@/api/news";
 import { timestampToTime } from "@/utils/common";
 import { quillEditor } from "vue-quill-editor";
@@ -144,6 +144,15 @@ export default {
     onMounted(() => {
         getInfoCategory();
         getInfo();
+    });
+
+    onActivated(() => {
+       data.id = root.$route.params.id.value || root.$store.getters["infoDetailed/infoId"];
+       getInfo();
+    });
+
+    onDeactivated(() => {
+
     });
 
     return {

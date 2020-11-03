@@ -60,7 +60,27 @@ export const defaultRouterMap = [
         component: () => import("../views/Console/index")
       }
     ]
-  }
+  },
+  // 404
+  {
+    path: "/page404",
+    meta:{
+      name:"404",
+      icon:"404"
+    },
+    hidden:true,
+    component: () => import("../views/Layout/index"),
+    children:[
+      {
+        path:"/404",
+        meta:{
+          name:"首页"
+        },
+        component: () => import("../views/404")
+      }
+    ]
+  },
+  { path:"*",redirect:"/404", hidden:true },
 ];
 
 export const asyncRouterMap = [
@@ -78,6 +98,7 @@ export const asyncRouterMap = [
         path:"/infoIndex",
         name:"InfoIndex",
         meta:{
+          keepAlive:true,
           name:"信息列表"
         },
         component: () => import("../views/Info/index")
@@ -86,6 +107,7 @@ export const asyncRouterMap = [
         path:"/infoCategory",
         name:"InfoCategory",
         meta:{
+          keepAlive:true,
           name:"信息分类"
         },
         component: () => import("../views/Info/category")
@@ -95,6 +117,7 @@ export const asyncRouterMap = [
         name:"InfoDetailed",
         hidden:true,
         meta:{
+            keepAlive:true,
             name:"信息详情"
         },
         component: () => import("../views/Info/detailed")
