@@ -25,8 +25,9 @@ router.beforeEach((to,from,next) => {
                     store.dispatch("permission/createRouter",response).then(response => {
                         let addRouters = store.getters['permission/addRouters'];
                         let allRouters = store.getters['permission/allRouter'];
-                        router.options.routes = allRouters;
                         router.addRoutes(addRouters);
+                        router.options.routes = allRouters;
+                        // console.log(router.options.routes)
                         next({...to,replace:true});
                     })
                 });

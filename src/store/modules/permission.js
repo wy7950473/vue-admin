@@ -29,6 +29,7 @@ const actions = {
         return new Promise((resolve,reject) => {
             getUserRoles().then(response => {
                 let data = response.data.data;
+                console.log(data);
                 commit('SET_ROLE',data);
                 resolve(data);
             }).catch(error => {
@@ -38,9 +39,9 @@ const actions = {
     },
     createRouter({commit},reauestData){
         return new Promise((resolve,reject) => {
-            let role = reauestData;
+            let role = reauestData.role;
             let routers = [];
-            if (rule.includes('admin')){
+            if (role.includes('admin')){
                 routers = asyncRouterMap;
             } else {
                 routers = asyncRouterMap.filter(item => {

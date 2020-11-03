@@ -149,7 +149,6 @@ export const asyncRouterMap = [
 
 const router = new VueRouter({
   routes:defaultRouterMap
-  
 });
 
 export default router;
